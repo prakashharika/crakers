@@ -30,42 +30,7 @@ Route::get('/', function () {
 })->name('home');
 Route::get('/test', function () {
     $admin = User::all();
-        DB::insert("
-        INSERT INTO register_posts (
-            title, subtitle, p1, p2, p3,
-            p1text, p2text, p3text, btn, image,
-            created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
-    ", [
-        'Sample Title',
-        'Sample Subtitle',
-        'Point 1',
-        'Point 2',
-        'Point 3',
-        'Text for point 1',
-        'Text for point 2',
-        'Text for point 3',
-        'Click Here',
-        'image.jpg'
-    ]);
-    DB::insert("
-        INSERT INTO general_details (
-            logo, email, phone, description, address,
-            instagram, linkedin, twitter, facebook, embaded,
-            created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
-    ", [
-        'logo.png',
-        'info@example.com',
-        '+1234567890',
-        'This is a company description.',
-        '123 Main Street, City, Country',
-        'https://instagram.com/example',
-        'https://linkedin.com/company/example',
-        'https://twitter.com/example',
-        'https://facebook.com/example',
-        '<iframe src="map-link"></iframe>'
-    ]);
+  
         DB::insert("
         INSERT INTO terms_and_policies (
             content, created_at, updated_at
