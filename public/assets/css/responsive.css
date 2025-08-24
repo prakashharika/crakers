@@ -1,0 +1,359 @@
+ @media (min-width: 901px) and (max-width:1024px) {
+     .property-search-section {
+         min-height: 100vh;
+         overflow-y: auto;
+     }
+
+     .property-search-cards {
+         width: 200px;
+         margin-bottom: 50px;
+     }
+
+     .apartment-gallery-section {
+         min-height: 100vh;
+         overflow-y: auto;
+     }
+
+
+     .apartment-gallery-image-card-slider {
+         grid-template-columns: repeat(2, 1fr);
+         display: grid;
+         gap: 20px;
+         /* Two columns */
+     }
+ }
+
+ /* Two or more columns for devices above 900px */
+
+ /* Three columns for larger screens */
+
+ @media(min-width:1400px) {
+     .apartment-gallery-image-card-slider {
+         display:
+             flex;
+         /* Three columns */
+     }
+
+     .property-search-section {
+         min-height: 100vh;
+         overflow-y: auto;
+     }
+
+     .apartment-gallery-section {
+         min-height: 100vh;
+         overflow-y: auto;
+     }
+ }
+
+ @media(min-width:1200px) and (max-width:1399px) {
+     .property-search-section {
+         min-height: 100vh;
+         overflow-y: auto;
+     }
+
+     .apartment-gallery-image-card-slider {
+         display:
+             flex;
+         /* Three columns */
+     }
+
+     .apartment-gallery-section {
+         min-height: 100vh;
+         overflow-y: auto;
+     }
+
+ }
+
+ @media (min-height: 800px)and (min-width: 992px) {
+     .property-search-section {
+         max-height: 60vh !important;
+         /* Ensures it takes up at least 70% of the viewport height */
+         overflow-y: hidden !important;
+         /* Allows vertical scrolling if content exceeds the available height */
+         padding: 20px;
+         /* Add padding for better spacing */
+         box-sizing: content-box;
+
+     }
+ }
+
+ @media (min-height: 800px) and (min-width: 992px) {
+     .property-search-section {
+         padding: 3rem 0;
+     }
+ }
+
+ @media (min-height: 1200px) {
+     .property-search-section {
+         padding: 4rem 0;
+     }
+ }
+
+ @media (min-height: 800px) and (min-width: 320px) {
+     .property-search-section {
+         min-height: 60vh !important;
+         /* Ensures it takes up at least 70% of the viewport height */
+         overflow-y: auto;
+         /* Allows vertical scrolling if content exceeds the available height */
+         padding: 20px;
+         /* Add padding for better spacing */
+         box-sizing: border-box;
+         /* Makes sure padding is included in height calculation */
+     }
+ }
+
+ /* If you want to set specific conditions for larger screens */
+ @media (min-height: 800px) and (min-width: 1024px) {
+     .property-search-section {
+         min-height: 60vh;
+         /* Adjust height for larger devices */
+         padding: 40px;
+     }
+ }
+
+ /* @media (min-height: 1200px) {
+     .property-search-section {
+         padding-top: 60px;
+         padding-bottom: 60px;
+     }
+ } */
+
+ @media (max-width: 900px) {
+     .home-service-item {
+         display: flex;
+         flex-direction: column;
+     }
+
+
+     .home-service-item img {
+         width: 100%;
+     }
+
+     .property-search-section {
+         min-height: 100vh;
+         overflow-y: auto;
+
+     }
+
+     .apartment-gallery-image-card-slider {
+         flex-direction: column;
+
+     }
+
+     .apartment-gallery-section {
+         min-height: 100vh;
+         overflow-y: auto;
+     }
+
+ }
+
+ @media (max-width:992px) {
+     .home-service-item {
+         display: flex;
+         flex-direction: column;
+
+     }
+ }
+
+ @media (max-width:700px) {
+
+
+     .services-heading {
+         flex-direction: column;
+         margin-bottom: 30px;
+     }
+
+     .home-service-item {
+         display: flex;
+         flex-direction: column;
+
+     }
+
+
+
+     .property-search-cards-wrapper {
+         display: flex;
+         flex-direction: column;
+     }
+
+     .property-search-section {
+         min-height: 100vh;
+         overflow-y: auto;
+     }
+
+     .property-search-cards {
+         width: 200px;
+         margin-bottom: 30px;
+     }
+
+     .property-register {
+
+         flex-direction: column;
+     }
+
+     .post-property-section-plus-content {
+         flex-direction: column;
+     }
+
+     .apartment-gallery-image-card-slider {
+         flex-direction: column;
+     }
+
+     .apartment-gallery-image-card {
+         margin-bottom: 20px;
+     }
+
+     .apartment-gallery-section {
+         min-height: 100vh;
+         overflow-y: auto;
+     }
+ }
+
+
+ @media (max-width: 767px) {
+     .home-overlay-text h1 {
+         font-size: 1.5rem;
+         margin-top: 150px !important;
+     }
+
+
+ }
+
+
+ @media (min-width: 768px) and (max-width: 1024px) {
+     .home-overlay-text h1 {
+         font-size: 1.5rem !important;
+     }
+ }
+
+ @media (min-width: 1025px) and (max-width: 1440px) {
+     .home-overlay-text h1 {
+         font-size: 2.9rem !important;
+     }
+ }
+
+ @media (min-width: 1441px) {
+     .home-overlay-text h1 {
+         font-size: 3.2rem !important;
+     }
+ }
+
+ /* High DPR devices */
+
+
+ @media (max-width: 768px) {
+     .footer-container {
+         flex-direction: column;
+         align-items: flex-start;
+     }
+
+     .footer-bottom {
+         flex-direction: column;
+         align-items: center;
+     }
+
+     .footer-bottom p {
+         margin-top: 10px;
+     }
+ }
+
+ /* Responsive Font Sizes with Variables */
+ :root {
+     --font-small: clamp(0.75rem, 1vw, 1rem);
+     /* Small text scaling */
+     --font-regular: clamp(1rem, 1.2vw, 1.25rem);
+     /* Regular text scaling */
+     --font-large: clamp(1.25rem, 1.5vw, 1.5rem);
+     /* Large text scaling */
+     --font-xlarge: clamp(1.5rem, 2vw, 2rem);
+     /* Extra-large text scaling */
+     --font-xxlarge: clamp(2rem, 3vw, 2.5rem);
+     /* Double extra-large text scaling */
+ }
+
+ /* Apply font variables to text styles */
+ body {
+     font-size: var(--font-regular);
+     line-height: 1.6;
+ }
+
+ h1 {
+     font-size: var(--font-large) !important;
+ }
+
+ h2 {
+     font-size: var(--font-regular) !important;
+ }
+
+ h3 {
+     font-size: var(--font-regular) !important;
+ }
+
+ h4,
+ h5,
+ h6 {
+     font-size: var(--font-small) !important;
+ }
+
+ p,
+ .service-card-para,
+ .content-side-para {
+     font-size: var(--font-small) !important;
+ }
+
+ .btn-know-more,
+ .nlp-view-button,
+ body span {
+     font-size: var(--font-small);
+ }
+
+ /* Ensure other text elements follow the same responsive scaling */
+ .home-section-title,
+ .services-section-subtitle,
+ .sliderTab .swiper-slide a,
+ .property-search-main-text,
+ .property-search-hover-text,
+ .footer-column ul li a {
+     font-size: var(--font-regular) !important;
+ }
+
+ /* Responsive Adjustments with Media Queries */
+ @media (max-width: 768px) {
+     :root {
+         --font-small: 0.7rem;
+         --font-regular: 0.85rem;
+         --font-large: 1.25rem;
+         --font-xlarge: 1.25rem;
+         --font-xxlarge: 1.5rem;
+     }
+ }
+
+ @media (min-width: 769px) and (max-width: 1024px) {
+     :root {
+         --font-small: 0.85rem;
+         --font-regular: 1rem;
+         --font-large: 1.45rem;
+         --font-xlarge: 1.5rem;
+         --font-xxlarge: 1.75rem;
+     }
+ }
+
+ @media (min-width: 1025px) and (max-width: 1440px) {
+     :root {
+         --font-small: 1rem;
+         --font-regular: 1.125rem;
+         --font-large: 1.25rem;
+         --font-xlarge: 1.75rem;
+         --font-xxlarge: 2rem;
+     }
+ }
+
+ @media (min-width: 1441px) {
+     :root {
+         --font-small: 1rem;
+         --font-regular: 1.125rem;
+         --font-large: 1.25rem;
+         --font-xlarge: 2rem;
+         --font-xxlarge: 2.5rem;
+     }
+ }
