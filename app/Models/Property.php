@@ -23,4 +23,9 @@ class Property extends Model
             $property->slug = Str::slug($property->name);
         });
     }
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'category_id');
+    }
+
 }

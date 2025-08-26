@@ -1,7 +1,8 @@
 
 @php
-    $buy = App\Models\Property::where('status', 1)
+    $categories = App\Models\Property::where('status', 1)
         ->orderBy('sort_order', 'asc')
+        ->take(9)
         ->get();
     $genaral = App\Models\GeneralDetail::find(1);
 @endphp
@@ -49,30 +50,27 @@
                         <div class="col-xl-10 col-md-4 col-3">
                             <div class="header-right">
                                 <form class="form_search-product style-search-2 d-none d-xl-flex">
-                                    <div class="select-category">
+                                        <div class="select-category">
                                         <select name="product_cat" id="product_cat" class="dropdown_product_cat">
                                             <option value="" selected="selected">All Categories</option>
-                                               <option class="level-0" value="sparklers">Sparklers (Phuljhari)</option>
-                                                <option class="level-0" value="ground-spinners">Ground Spinners (Chakri)</option>
-                                                <option class="level-0" value="flower-pots">Flower Pots (Anar)</option>
-                                                <option class="level-0" value="rockets">Rockets</option>
-                                                <option class="level-0" value="bombs">Bombs / Sound Crackers</option>
-                                                <option class="level-0" value="sky-shots">Sky Shots / Aerials</option>
-                                                <option class="level-0" value="color-pencils">Color Matches / Pencils</option>
-                                                <option class="level-0" value="garlands">Garlands (Ladis)</option>
-
+                                            @foreach($categories as $category)
+                                                <option class="level-0" value="{{ $category->slug }}">
+                                                    {{ $category->name }}
+                                                </option>
+                                            @endforeach
                                         </select>
-                                        <ul class="select-options">
-                                            <li class="link" rel=""><span>All Categories</span></li>
-                                            <li class="link" rel="sparklers"><span>Sparklers (Phuljhari)</span></li>
-                                            <li class="link" rel="ground-spinners"><span>Ground Spinners (Chakri)</span></li>
-                                            <li class="link" rel="flower-pots"><span>Flower Pots (Anar)</span></li>
-                                            <li class="link" rel="rockets"><span>Rockets</span></li>
-                                            <li class="link" rel="bombs"><span>Bombs / Sound Crackers</span></li>
-                                            <li class="link" rel="sky-shots"><span>Sky Shots / Aerials</span></li>
-                                            <li class="link" rel="color-pencils"><span>Color Matches / Pencils</span></li>
-                                            <li class="link" rel="garlands"><span>Garlands (Ladis)</span></li>
 
+                                        <ul class="select-options">
+                                            <li class="link" rel="">
+                                                <a href="{{ route('products.all') }}"><span>All Categories</span></a>
+                                            </li>
+                                            @foreach($categories as $category)
+                                                <li class="link" rel="{{ $category->slug }}">
+                                                    <a href="{{ route('category.products', ['slug' => $category->slug]) }}">
+                                                        <span>{{ $category->name }}</span>
+                                                    </a>
+                                                </li>
+                                            @endforeach
                                         </ul>
                                     </div>
                                     <span class="br-line type-vertical"></span>
@@ -126,17 +124,15 @@
                                     <h6 class="name-category fw-semibold">All Categories</h6>
                                     <i class="icon icon-caret-down"></i>
                                 </div>
-                             <ul class="box-nav-category active-item">
-                                <li><a href="javascript:void(0)" class="nav-category_link h5">Sparklers (Phuljhari)</a></li>
-                                <li><a href="javascript:void(0)" class="nav-category_link h5">Ground Spinners (Chakri)</a></li>
-                                <li><a href="javascript:void(0)" class="nav-category_link h5">Flower Pots (Anar)</a></li>
-                                <li><a href="javascript:void(0)" class="nav-category_link h5">Rockets</a></li>
-                                <li><a href="javascript:void(0)" class="nav-category_link h5">Bombs / Sound Crackers</a></li>
-                                <li><a href="javascript:void(0)" class="nav-category_link h5">Sky Shots / Aerials</a></li>
-                                <li><a href="javascript:void(0)" class="nav-category_link h5">Color Matches / Pencils</a></li>
-                                <li><a href="javascript:void(0)" class="nav-category_link h5">Garlands (Ladis)</a></li>
-                            </ul>
-
+                                <ul class="box-nav-category active-item">
+                                    @foreach($categories as $category)
+                                        <li>
+                                            <a href="{{ route('category.products', ['slug' => $category->slug]) }}" class="nav-category_link h5">
+                                                {{ $category->name }}
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
 
                             </div>
                             <span class="br-line type-vertical h-24"></span>
@@ -184,30 +180,21 @@
                  <div class="col-xl-10 col-md-4 col-3">
                     <div class="header-right">
                         <form class="form_search-product style-search-2 d-none d-xl-flex">
-                            <div class="select-category">
-                                <select name="product_cat" id="product_cat" class="dropdown_product_cat">
-                                    <option value="" selected="selected">All Categories</option>
-                                    <option class="level-0" value="sparklers">Sparklers (Phuljhari)</option>
-                                    <option class="level-0" value="ground-spinners">Ground Spinners (Chakri)</option>
-                                    <option class="level-0" value="flower-pots">Flower Pots (Anar)</option>
-                                    <option class="level-0" value="rockets">Rockets</option>
-                                    <option class="level-0" value="bombs">Bombs / Sound Crackers</option>
-                                    <option class="level-0" value="sky-shots">Sky Shots / Aerials</option>
-                                    <option class="level-0" value="color-pencils">Color Matches / Pencils</option>
-                                    <option class="level-0" value="garlands">Garlands (Ladis)</option>
-                                </select>
-                                <ul class="select-options">
-                                    <li class="link" rel=""><span>All Categories</span></li>
-                                    <li class="link" rel="sparklers"><span>Sparklers (Phuljhari)</span></li>
-                                    <li class="link" rel="ground-spinners"><span>Ground Spinners (Chakri)</span></li>
-                                    <li class="link" rel="flower-pots"><span>Flower Pots (Anar)</span></li>
-                                    <li class="link" rel="rockets"><span>Rockets</span></li>
-                                    <li class="link" rel="bombs"><span>Bombs / Sound Crackers</span></li>
-                                    <li class="link" rel="sky-shots"><span>Sky Shots / Aerials</span></li>
-                                    <li class="link" rel="color-pencils"><span>Color Matches / Pencils</span></li>
-                                    <li class="link" rel="garlands"><span>Garlands (Ladis)</span></li>
-                                </ul>
-                            </div>
+                           <div class="select-category">
+    <ul class="select-options">
+        <li class="link" rel="">
+            <a href="{{ route('products.all') }}"><span>All Categories</span></a>
+        </li>
+        @foreach($categories as $category)
+            <li class="link" rel="{{ $category->slug }}">
+                <a href="{{ route('category.products', ['slug' => $category->slug]) }}">
+                    <span>{{ $category->name }}</span>
+                </a>
+            </li>
+        @endforeach
+    </ul>
+</div>
+
                             <span class="br-line type-vertical"></span>
                             <input class="style-def" type="text" placeholder="Search for crackers..." required>
                             <button type="submit" class="btn-submit">
@@ -260,15 +247,14 @@
                                     <h6 class="name-category fw-semibold">All Categories</h6>
                                     <i class="icon icon-caret-down"></i>
                                 </div>
-                                <ul class="box-nav-category active-item">
-                                    <li><a href="javascript:void(0)" class="nav-category_link h5">Sparklers (Phuljhari)</a></li>
-                                    <li><a href="javascript:void(0)" class="nav-category_link h5">Ground Spinners (Chakri)</a></li>
-                                    <li><a href="javascript:void(0)" class="nav-category_link h5">Flower Pots (Anar)</a></li>
-                                    <li><a href="javascript:void(0)" class="nav-category_link h5">Rockets</a></li>
-                                    <li><a href="javascript:void(0)" class="nav-category_link h5">Bombs / Sound Crackers</a></li>
-                                    <li><a href="javascript:void(0)" class="nav-category_link h5">Sky Shots / Aerials</a></li>
-                                    <li><a href="javascript:void(0)" class="nav-category_link h5">Color Matches / Pencils</a></li>
-                                    <li><a href="javascript:void(0)" class="nav-category_link h5">Garlands (Ladis)</a></li>
+                             <ul class="box-nav-category active-item">
+                                    @foreach($categories as $category)
+                                        <li>
+                                            <a href="{{ route('category.products', ['slug' => $category->slug]) }}" class="nav-category_link h5">
+                                                {{ $category->name }}
+                                            </a>
+                                        </li>
+                                    @endforeach
                                 </ul>
 
                             </div>

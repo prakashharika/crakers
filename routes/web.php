@@ -26,7 +26,8 @@ use Illuminate\Support\Facades\DB;
 
 Route::get('/', function () {
     $blogs = BlogPost::latest()->take(3)->get();
-    return view('welcome', compact('blogs'));
+    $categories = Property::where('status', 1)->orderBy('sort_order', 'asc')->take(9)->get();
+    return view('welcome', compact('blogs', 'categories'));
 })->name('home');
 Route::get('/test', function () {
     $admin = User::all();
@@ -42,6 +43,11 @@ Route::get('/test', function () {
     ]);
     dd($admin);
 })->name('test');
+
+Route::get('/products', [ProductController::class, 'productAll'])->name('products.all');
+Route::get('/products/category/{slug}', [ProductController::class, 'categoryProduct'])->name('category.products');
+
+
 Route::get('/blog/{slug}', [HomeControl::class, 'blogShow'])->name('blog-user.show');
 Route::get('/blogs', [HomeControl::class, 'blogList'])->name('blog.list');
 Route::get('/sales-interest/{slug?}', [HomeControl::class, 'sales'])->name('sales.interest');

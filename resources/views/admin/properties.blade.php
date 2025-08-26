@@ -14,12 +14,12 @@
                 <div bis_skin_checked="1">
                     <h4 class="main-title mb-0">Products</h4>
                 </div>
-
            <div class="d-flex justify-content-end align-items-center mb-4">
                 <a class="btn btn-secondary me-2" href="{{ route('property.view') }}">Back to list</a>
-                <a href="{{ route('products.create') }}" class="btn btn-success">
-                    + Add Product
-                </a>
+             <a href="{{ route('products.create', ['category_id' => request()->route('id')]) }}" class="btn btn-success">
+                + Add Product
+            </a>
+
             </div>
             </div>
         
@@ -43,16 +43,11 @@
                             </thead>
                             <tbody>
                                 @foreach ($products as $index => $product)
-                                    @php
-                                        // Decode images JSON or get as array
-                                        $images = is_array($product->images) ? $product->images : json_decode($product->images, true);
-                                        $firstImage = $images && count($images) > 0 ? $images[0] : null;
-                                    @endphp
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
                                         <td>
-                                            @if ($firstImage)
-                                                <img src="{{ asset($firstImage) }}" alt="Product Image" width="60" height="60" style="object-fit: cover;" class="img-thumbnail">
+                                            @if ($product->images)
+                                                <img src="{{ asset($product->images) }}" alt="Product Image" width="60" height="60" style="object-fit: cover;" class="img-thumbnail">
                                             @else
                                                 <span class="text-muted">No Image</span>
                                             @endif

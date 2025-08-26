@@ -131,7 +131,7 @@ button.btn.btn-danger.mt-2 {
           <!-- Product Form -->
 <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
-
+<input type="hidden" name="category_id" value="{{ request()->query('category_id') }}">
     <!-- Name -->
     <div class="mb-3">
         <label for="name" class="form-label">Name *</label>
@@ -200,8 +200,8 @@ button.btn.btn-danger.mt-2 {
 
     <!-- Images -->
     <div class="mb-3">
-        <label for="images" class="form-label">Images (multiple)</label>
-        <input type="file" name="images[]" id="images" class="form-control" multiple accept="image/*">
+        <label for="images" class="form-label">Image</label>
+        <input type="file" name="images" id="images" class="form-control" multiple accept="image/*">
     </div>
 
     <!-- Submit -->

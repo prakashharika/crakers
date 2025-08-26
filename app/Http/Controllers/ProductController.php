@@ -3,20 +3,29 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Property;
 use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
 
-    public function index()
+public function index(Request $request, $categoryId = null)
 {
-    $products = Product::latest()->paginate(10); 
-   return view('admin.properties', compact('products'));
+    $query = Product::with('category')->latest();
 
+    if ($categoryId) {
+        $query->where('category_id', $categoryId);
+    }
+
+    $products = $query->paginate(10);
+
+    return view('admin.properties', compact('products', 'categoryId'));
 }
-    public function create()
+
+
+    public function create(Request $request)
     {
-        return view('admin.properties-add'); 
+        return view('admin.properties-add', ['category_id' => $request->id]); 
     }
 
   public function store(Request $request)
@@ -24,16 +33,16 @@ class ProductController extends Controller
     $request->validate([
         'name' => 'required|string|max:255',
         'tamil_name' => 'nullable|string|max:255',
+        'category_id' => 'required|exists:properties,id',
         'base_price' => 'required|numeric|min:0',
         'selling_price' => 'required|numeric|min:0',
         'packet_or_box' => 'required|in:packet,box',
         'quantity' => 'required|integer|min:0',
         'description' => 'required|string',
         'items' => 'required|string',
-        'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+        'images' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
     ]);
 
-    // Auto-generate slug from name
     $slug = Str::slug($request->name);
     $originalSlug = $slug;
     $counter = 1;
@@ -41,15 +50,13 @@ class ProductController extends Controller
         $slug = $originalSlug . '-' . $counter++;
     }
 
-    // Handle image upload
-    $imagePaths = [];
-    if ($request->hasFile('images')) {
-        foreach ($request->file('images') as $image) {
-            $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('uploads'), $filename);
-            $imagePaths[] = 'uploads/' . $filename;
-        }
-    }
+if ($request->hasFile('images')) {
+    $image = $request->file('images'); // ← This is what you're missing
+    $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+    $image->move(public_path('uploads'), $filename);
+    $imagePaths = 'uploads/' . $filename;
+}
+
 
     // Save product
     $product = Product::create([
@@ -63,9 +70,10 @@ class ProductController extends Controller
         'slug' => $slug,
         'items' => $request->items,
         'images' => $imagePaths,
+        'category_id' => $request->category_id,
     ]);
 
-    return redirect()->route('property-list', ['id' => $product->id])->with('success', 'Product created successfully!');
+    return redirect()->route('property-list', ['id' => $product->category_id])->with('success', 'Product created successfully!');
 }
 
 
@@ -117,25 +125,24 @@ class ProductController extends Controller
     $product->slug = $slug;
     $product->items = $validated['items'];
 
-    // Merge new images with existing
-    $existingImages = is_array($product->images) ? $product->images : json_decode($product->images, true) ?? [];
 
     if ($request->hasFile('images')) {
-        $newImagePaths = [];
-
-        foreach ($request->file('images') as $image) {
-            $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('uploads'), $filename);
-            $newImagePaths[] = 'uploads/' . $filename;
+        if ($product->images) {
+            $oldImagePath = public_path($product->images);
+            if (file_exists($oldImagePath)) {
+                @unlink($oldImagePath);
+            }
         }
 
-        $allImages = array_merge($existingImages, $newImagePaths);
-        $product->images = $allImages;
+        $image = $request->file('images');
+        $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+        $image->move(public_path('uploads'), $filename);
+        $product->images = 'uploads/' . $filename;
     }
 
     $product->save();
 
-    return redirect()->route('property-list', ['id' => $product->id])
+    return redirect()->route('property-list', ['id' => $product->category_id])
         ->with('success', 'Product updated successfully.');
 }
 
@@ -170,5 +177,28 @@ public function destroy($id)
 
      return redirect()->route('property-list', ['id' => $product->id])->with('success', 'Product deleted successfully.');
 }
+
+
+ public function productAll()
+    {
+        $products = Product::with('category')->latest()->paginate(10);
+        $categories = Property::where('status', 1)->orderBy('sort_order', 'asc')->get();
+
+        return view('admin.properties', compact('products', 'categories'));
+    }
+
+    public function categoryProduct($slug)
+    {
+        $category = Property::where('slug', $slug)->firstOrFail();
+
+        $products = Product::where('category_id', $category->id)
+                           ->with('category')
+                           ->latest()
+                           ->paginate(10);
+
+        $categories = Property::where('status', 1)->orderBy('sort_order', 'asc')->get();
+
+        return view('admin.properties', compact('products', 'categories', 'category'));
+    }
 
 }

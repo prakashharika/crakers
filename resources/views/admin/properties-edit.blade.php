@@ -140,6 +140,7 @@ button.btn.btn-danger.mt-2 {
         <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
+        <input type="hidden" name="category_id" value="{{ request()->query('category_id') }}">
 
         <!-- Name -->
         <div class="mb-3">
@@ -206,21 +207,14 @@ button.btn.btn-danger.mt-2 {
         <input type="text" name="items" id="items" value="{{ old('items', $product->items) }}" class="form-control" required>
     </div>
 
-@php
-    // Decode images JSON to array if necessary
-    $images = is_array($product->images) ? $product->images : json_decode($product->images, true);
-@endphp
-
-@if ($images && count($images) > 0)
+@if ($product->images)
     <div class="mb-3">
         <label class="form-label">Existing Images</label>
         <div class="d-flex flex-wrap gap-2">
-            @foreach ($images as $image)
                 <div style="position: relative;">
-                    <img src="{{ asset($image) }}" alt="Product Image" width="80" class="img-thumbnail">
+                    <img src="{{ asset($product->images) }}" alt="Product Image" width="80" class="img-thumbnail">
                     {{-- Optional: Add remove button or checkbox here --}}
                 </div>
-            @endforeach
         </div>
     </div>
 @endif
@@ -228,7 +222,7 @@ button.btn.btn-danger.mt-2 {
 <!-- Upload New Images -->
 <div class="mb-3">
     <label for="images" class="form-label">Replace/Add Images</label>
-    <input type="file" name="images[]" id="images" class="form-control" multiple accept="image/*">
+    <input type="file" name="images" id="images" class="form-control" multiple accept="image/*">
 </div>
 
 
