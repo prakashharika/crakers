@@ -27,7 +27,8 @@ use Illuminate\Support\Facades\DB;
 Route::get('/', function () {
     $blogs = BlogPost::latest()->take(3)->get();
     $categories = Property::where('status', 1)->orderBy('sort_order', 'asc')->take(9)->get();
-    return view('welcome', compact('blogs', 'categories'));
+      $slider = Slider::latest()->get();
+    return view('welcome', compact('blogs', 'categories','slider'));
 })->name('home');
 Route::get('/test', function () {
     $admin = User::all();

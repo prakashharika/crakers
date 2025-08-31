@@ -12,11 +12,19 @@
                 <div class="row">
                     <div class="col-xl-6 col-lg-8">
                         <div class="topbar-left justify-content-center justify-content-sm-start">
+                            @php
+                                $phones = isset($genaral->phone) ? explode(',', $genaral->phone) : [];
+                                $firstPhone = count($phones) ? trim($phones[0]) : '18001234567';
+                            @endphp
+
                             <ul class="topbar-option-list">
                                 <li class="h6 d-none d-sm-flex">
-                                    <a href="tel:18001234567" class="text-white link track"><i class="icon icon-phone"></i> Call us for free: +1(800)
-                                        123
-                                        4567</a>
+                                    <a href="tel:{{ $firstPhone }}" class="text-white link track">
+                                        <i class="icon icon-phone"></i> Call us:
+                                        @foreach($phones as $phone)
+                                            {{ trim($phone) }}
+                                        @endforeach
+                                    </a>
                                 </li>
                             </ul>
                         </div>
@@ -44,7 +52,9 @@
                         </div>
                         <div class="col-xl-2 col-md-4 col-6 text-center text-xl-start">
                             <a href="{{route('home')}}" class="logo-site justify-content-center justify-content-xl-start">
-                                <img src="{{ asset('front-end/images/logo/cpr.png') }}" alt="">
+                                @isset($genaral->logo)
+                                    <img src="{{ asset('images/' . $genaral->logo) }}" alt="">
+                                @endisset
                             </a>
                         </div>
                         <div class="col-xl-10 col-md-4 col-3">
