@@ -5,58 +5,61 @@
     <div id="wrapper">
         
         <!-- Banner Slider -->
-        <div class="tf-slideshow tf-btn-swiper-main">
-            <div dir="ltr" class="swiper tf-swiper sw-slide-show slider_effect_fade" data-auto="true" data-loop="true" data-effect="fade"
+       <div class="tf-slideshow tf-btn-swiper-main">
+            <div dir="ltr"
+                class="swiper tf-swiper sw-slide-show slider_effect_fade"
+                data-auto="true"
+                data-loop="true"
+                data-effect="fade"
                 data-delay="3000">
-                <div class="swiper-wrapper">
-                    <div class="swiper-wrapper">
-    @foreach ($slider as $item)
-        <div class="swiper-slide">
-            <div class="slider-wrap style-2">
-                <div class="sld_image">
-                    <img src="{{ asset('images/' . $item->image) }}"
-                         data-src="{{ asset('images/' . $item->image) }}"
-                         alt="Slider Image"
-                         class="lazyload scale-item">
-                </div>
-                <div class="sld_content">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-11">
-                                <div class="content-sld_wrap">
-                                    <h4 class="sub-title_sld has-icon text-primary fade-item fade-item-1">
-                                        <span class="icon d-flex">
-                                        </span>
-                                        Don't miss the opportunity
-                                    </h4>
-                                    <h1 class="title_sld text-display fade-item fade-item-2">
-                                        <a href="javascript:void(0)" class="link fw-normal" style="color: #fff !important">
-                                            {{ $item->title }}
-                                        </a>
-                                    </h1>
-                                    <p class="fade-item fade-item-3 text-white">
-                                        {{ $item->description }}
-                                    </p>
-                                    <div class="fade-item fade-item-4">
-                                        <a href="javascript:void(0)" class="tf-btn animate-btn fw-semibold">
-                                            Shop now
-                                            <i class="icon icon-arrow-right"></i>
-                                        </a>
+         
+        <div class="swiper-wrapper"> <!-- ✅ Only one wrapper -->
+            @foreach ($slider as $item)
+                <div class="swiper-slide">
+                    <div class="slider-wrap style-2">
+                        <div class="sld_image">
+                            <img src="{{ asset('images/' . $item->image) }}"
+                                 data-src="{{ asset('images/' . $item->image) }}"
+                                 alt="Slider Image"
+                                 class="lazyload scale-item">
+                        </div>
+                        <div class="sld_content">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-11">
+                                        <div class="content-sld_wrap">
+                                            <h4 class="sub-title_sld has-icon text-primary fade-item fade-item-1">
+                                                <span class="icon d-flex"></span>
+                                                Don't miss the opportunity
+                                            </h4>
+                                            <h1 class="title_sld text-display fade-item fade-item-2">
+                                                <a href="javascript:void(0)" class="link fw-normal" style="color: #fff !important">
+                                                    {{ $item->title }}
+                                                </a>
+                                            </h1>
+                                            <p class="fade-item fade-item-3 text-white">
+                                                {{ $item->description }}
+                                            </p>
+                                            <div class="fade-item fade-item-4">
+                                                <a href="javascript:void(0)" class="tf-btn animate-btn fw-semibold">
+                                                    Shop now
+                                                    <i class="icon icon-arrow-right"></i>
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            @endforeach
         </div>
-    @endforeach
+
+        <div class="sw-dot-default tf-sw-pagination"></div>
+    </div>
 </div>
 
-                </div>
-                <div class="sw-dot-default tf-sw-pagination"></div>
-            </div>
-        </div>
         <!-- /Banner Slider -->
         <!-- Category -->
         <section class="flat-spacing">
@@ -2557,5 +2560,26 @@
         </div>
     </div>
     <!-- /Demo -->
+<link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
+<script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var swiper = new Swiper('.sw-slide-show', {
+            loop: true,
+            effect: 'fade',
+            autoplay: {
+                delay: 3000,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: '.tf-sw-pagination',
+                clickable: true,
+            },
+            fadeEffect: {
+                crossFade: true
+            }
+        });
+    });
+</script>
 
 @endsection

@@ -46,7 +46,7 @@ Route::get('/test', function () {
 })->name('test');
 
 Route::get('/products', [ProductController::class, 'productAll'])->name('products.all');
-Route::get('/products/category/{slug}', [ProductController::class, 'categoryProduct'])->name('category.products');
+Route::get('/products/category/{slug?}', [ProductController::class, 'categoryProduct'])->name('category.products');
 
 
 Route::get('/blog/{slug}', [HomeControl::class, 'blogShow'])->name('blog-user.show');
@@ -67,6 +67,7 @@ Route::post('/filter-properties', [HomeControl::class, 'filterProperties'])->nam
 
 Route::get('/terms-and-conditions', [HomeControl::class, 'termsConditions'])->name('terms.conditions.view');
 Route::get('/privacy-policy', [HomeControl::class, 'privacyPolicy'])->name('privacy.policy.view');
+ Route::get('/about-us', [HomeControl::class, 'aboutUs'])->name('about.us.view');
 Route::get('/contact', [HomeControl::class, 'contact'])->name('contact');
 Route::post('/user-enquiry', [HomeControl::class, 'userEnquiry'])->name('user.enquiry');
 
@@ -106,6 +107,8 @@ Route::prefix('admin')->group(function () {
         Route::get('/privacy-policy', [HomePageControl::class, 'privacyPolicy'])->name('privacy.policy');
         Route::put('/terms-conditions', [HomePageControl::class, 'termsConditionsUpdate'])->name('terms.conditions.update');
         Route::put('/privacy-policy', [HomePageControl::class, 'privacyPolicyUpdate'])->name('privacy.policy.update');
+        Route::post('/about-us/update', [HomePageControl::class, 'aboutUsUpdate'])->name('about.us.update');
+        Route::get('/about-us', [HomePageControl::class, 'aboutUs'])->name('about.us');
         Route::post('/property-update/{property}',[PropertyControl::class, 'update'])->name('property.update');
         Route::get('/property-owners', [LandOwnerControl::class, 'index'])->name('owners.index');
         Route::get('/property-owner-view/{id}', [LandOwnerControl::class, 'viewLandOwner'])->name('view.landowner');

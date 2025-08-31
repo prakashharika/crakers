@@ -155,7 +155,7 @@
                                         <a href="javascript:void(0)" class="item-link">CATEGORIES</a>
                                     </li>
                                     <li class="menu-item position-relative">
-                                        <a href="javascript:void(0)" class="item-link">ABOUT US</a>
+                                        <a href="{{ route('about.us.view') }}" class="item-link">ABOUT US</a>
                                     </li>
                                     <li class="menu-item position-relative">
                                         <a href="{{route('blog.list')}}" class="item-link">BLOG</a>
@@ -281,10 +281,10 @@
                                         <a href="javascript:void(0)" class="item-link">CATEGORIES</a>
                                     </li>
                                     <li class="menu-item mn-none position-relative">
-                                        <a href="javascript:void(0)" class="item-link">ABOUT US</a>
+                                        <a href="{{ route('about.us.view') }}" class="item-link">ABOUT US</a>
                                     </li>
                                     <li class="menu-item mn-none position-relative">
-                                        <a href="javascript:void(0)" class="item-link">BLOG</a>
+                                        <a href="{{route('blog.list')}}" class="item-link">BLOG</a>
                                     </li>
                                 </ul>
                             </nav>

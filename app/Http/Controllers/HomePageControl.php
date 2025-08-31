@@ -14,7 +14,8 @@ class HomePageControl extends Controller
     public function index()
     {
         $sliders = Slider::all();
-        return response()->json($sliders);
+        $register = RegisterPost::where('id', 1)->first();
+        return response()->json($sliders,'register');
     }
     public function list()
     {
@@ -195,6 +196,7 @@ dd($e->getMessage());
     }
     public function termsConditions()
     {
+       
         $terms = TermsAndPolicy::findOrFail(1); // Fetch terms using the model
         return view('admin.terms', compact('terms'));
     }
@@ -205,6 +207,13 @@ dd($e->getMessage());
         $policy = TermsAndPolicy::findOrFail(2); 
         return view('admin.policy', compact('policy'));
     }
+
+    public function aboutUs()
+{
+    $about = TermsAndPolicy::findOrFail(3);
+    return view('admin.aboutus', compact('about'));
+}
+
     public function termsConditionsUpdate(Request $request)
     {
         $validated = $request->validate([
@@ -243,4 +252,24 @@ dd($e->getMessage());
             return redirect()->back()->withErrors('Failed to update Privacy Policy. Please try again.');
         }
     }
+
+    public function aboutUsUpdate(Request $request)
+{
+    $validated = $request->validate([
+        'about_us' => 'required|string',
+    ]);
+
+    try {
+        TermsAndPolicy::updateOrCreate(
+            ['id' => 3], // ID for About Us
+            ['content' => $validated['about_us'], 'updated_at' => now()]
+        );
+
+        return redirect()->back()->with('success', 'About Us updated successfully!');
+    } catch (\Exception $e) {
+        \Log::error('About Us update failed: ' . $e->getMessage());
+        return redirect()->back()->withErrors('Failed to update About Us. Please try again.');
+    }
+}
+
 }

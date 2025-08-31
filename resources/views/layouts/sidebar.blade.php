@@ -79,6 +79,15 @@
                     <i class="ri-newspaper-fill"></i> <span> Blog </span>
                 </a>
             </li>
+
+            
+            <li class="nav-item">
+              <a href="{{ route('about.us') }}" class="nav-link {{ request()->routeIs('about.us') ? 'active' : '' }}">
+                <i class="ri-information-fill"></i> <span>About Us</span>
+              </a>
+            </li>
+
+
                <li class="nav-item">
               <a href="{{ route('terms.conditions') }}" class="nav-link {{ request()->routeIs('terms.conditions') ? 'active' : '' }}">
                 <i class="ri-file-list-3-fill"></i> <span>Terms and Conditions </span>

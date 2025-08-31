@@ -86,11 +86,11 @@
                                 <p class="footer-heading footer-heading-mobile">Information</p>
                                 <div class="tf-collapse-content">
                                     <ul class="footer-menu-list">
-                                        <li><a href="javascript:void(0)" class="link h6">About Us</a></li>
-                                        <li><a href="javascript:void(0)" class="link h6">Term & Policy</a></li>
-                                        <li><a href="javascript:void(0)" class="link h6">Privacy Policy</a></li>
+                                        <li><a href="{{ route('about.us.view') }}" class="link h6">About Us</a></li>
+                                        <li><a href="{{ route('terms.conditions.view') }}" class="link h6">Term & Policy</a></li>
+                                        <li><a href="{{ route('privacy.policy.view') }}" class="link h6">Privacy Policy</a></li>
                                         <li><a href="{{route('blog.list')}}" class="link h6">Blog</a></li>
-                                        <li><a href="javascript:void(0)" class="link h6">Refunds</a></li>
+                                        <!-- <li><a href="javascript:void(0)" class="link h6">Refunds</a></li> -->
                                     </ul>
                                 </div>
                             </div>

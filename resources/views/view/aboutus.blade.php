@@ -49,7 +49,7 @@
 </style>
 <div class="container-fluid px-3">
     <div class="terms-conditions">
-        {!! $policy->content??'' !!}
+        {!! $about->content??'' !!}
     </div>
 
 </div>
