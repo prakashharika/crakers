@@ -52,12 +52,8 @@ Route::get('/test', function () {
 })->name('test');
 
 Route::get('/products', [ProductController::class, 'productAll'])->name('products.all');
-<<<<<<< HEAD
-Route::get('/products/category/{slug}', [ProductController::class, 'categoryProduct'])->name('category.products');
 Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.show');
-=======
 Route::get('/products/category/{slug?}', [ProductController::class, 'categoryProduct'])->name('category.products');
->>>>>>> d9a3bc1e7cba4374d4d591d9039d8450f54f0e07
 
 Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
 Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
