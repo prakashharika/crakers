@@ -83,7 +83,8 @@ Route::get('/choose-package', [HomeControl::class, 'choosePackage'])->name('choo
 Route::get('/package-selecting/{id}', [HomeControl::class, 'updatelandownerPackage'])->name('package.selecting');
 Route::get('/order-package/{id}', [HomeControl::class, 'orderResponse'])->name('order.package');
 Route::get('login/google', [HomeControl::class, 'redirectToGoogle']);
-Route::get('/callback', [HomeControl::class, 'handleGoogleCallback']);
+Route::get('/callback', [HomeControl::class, 'handleGoogleCallback']); 
+
 Route::get('/search', [HomeControl::class, 'search'])->name('search');
 Route::post('/filter-properties', [HomeControl::class, 'filterProperties'])->name('filter-properties');
 
