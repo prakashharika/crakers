@@ -5,6 +5,7 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\HomeControl;
 use App\Http\Controllers\HomePageControl;
 use App\Http\Controllers\LandOwnerControl;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PackagesControl;
 use App\Http\Controllers\ProfileController;
@@ -26,11 +27,16 @@ use Illuminate\Support\Facades\DB;
 
 Route::get('/', function () {
     $blogs = BlogPost::latest()->take(3)->get();
-    $categories = Property::where('status', 1)->orderBy('sort_order', 'asc')->take(9)->get();
-      $slider = Slider::latest()->get();
-    return view('welcome', compact('blogs', 'categories','slider'));
+    $categories = Property::where('status', 1)->orderBy('created_at', 'asc')->take(9)->get();
+    $categories2 = Property::where('status', 1)->orderBy('created_at', 'desc')->take(9)->get();
+    $slider = Slider::latest()->get();
+// dd(session()->get('cart', []));
+
+
+    return view('welcome', compact('blogs', 'categories','slider','categories2'));
 })->name('home');
 Route::get('/test', function () {
+    dd(session()->get('cart', []));
     $admin = User::all();
   
         DB::insert("
@@ -47,7 +53,23 @@ Route::get('/test', function () {
 
 Route::get('/products', [ProductController::class, 'productAll'])->name('products.all');
 Route::get('/products/category/{slug}', [ProductController::class, 'categoryProduct'])->name('category.products');
+Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.show');
 
+Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
+Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+Route::get('/cart/content', [CartController::class, 'getCartContent'])->name('cart.content');
+Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
+Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update');
+Route::get('/checkout', function () {
+       $blogs = BlogPost::latest()->take(3)->get();
+    $categories = Property::where('status', 1)->orderBy('created_at', 'asc')->take(9)->get();
+    $categories2 = Property::where('status', 1)->orderBy('created_at', 'desc')->take(9)->get();
+    $slider = Slider::latest()->get();
+// dd(session()->get('cart', []));
+
+
+    return view('welcome', compact('blogs', 'categories','slider','categories2')); 
+})->name('checkout');
 
 Route::get('/blog/{slug}', [HomeControl::class, 'blogShow'])->name('blog-user.show');
 Route::get('/blogs', [HomeControl::class, 'blogList'])->name('blog.list');

@@ -31,11 +31,11 @@
     </button>
 
     <!-- preload -->
-    {{-- <div class="preload preload-container" id="preload">
+    <div class="preload preload-container" id="preload">
         <div class="preload-logo">
             <div class="spinner"></div>
         </div>
-    </div> --}}
+    </div>
     <!-- /preload -->
         @include('layouts.header')
         

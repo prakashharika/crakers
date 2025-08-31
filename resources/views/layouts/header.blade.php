@@ -6,6 +6,17 @@
         ->get();
     $genaral = App\Models\GeneralDetail::find(1);
 @endphp
+<style>
+    .add-to-cart-btn.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+}
+    </style>
 <!-- Top Bar-->
         <div class="tf-topbar bg-dark-blu type-space-2 line-bt-3">
             <div class="container-full-2">
@@ -107,7 +118,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="nav-icon-item-2 text-white link" href="#shoppingCart" data-bs-toggle="offcanvas">
+                                        <a class="nav-icon-item-2 text-white link" href="{{route('cart.view')}}">
                                             <div class="position-relative d-flex">
                                                 <i class="icon icon-shopping-cart-simple"></i>
                                                 <span class="count">24</span>
