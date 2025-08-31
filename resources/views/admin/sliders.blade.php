@@ -230,13 +230,16 @@ function editSlider(id) {
     $('#editDescription').val(data.description);
 
     // Check if the slider has an image and display it
-    if (data.image) {
-        $('#editImagePreview')
-            .attr('src', `{{asset('/')}}/images/${data.image}`) // Update the src attribute
-            .show(); // Show the image
-    } else {
-        $('#editImagePreview').hide(); // Hide the preview if no image is available
-    }
+   
+        if (data.image) {
+            const imagePath = `/images/${data.image}`; // ✅ Adjust if your images are elsewhere
+            $('#editImagePreview')
+                .attr('src', imagePath)
+                .show();
+        } else {
+            $('#editImagePreview').hide();
+        }
+
 
     // Open the modal
     $('#editSliderModal').modal('show');

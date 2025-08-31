@@ -2,18 +2,9 @@
 
 @section('content')
 <style>
-    body {
+    
 
-        margin: 0;
-        padding-top: 150px;
-        background-color: #f8f9fa;
-    }
-
-    @media(max-width:576px) {
-        body {
-            padding-top: 200px;
-        }
-    }
+    
 
     .terms-conditions {
         padding: 20px;

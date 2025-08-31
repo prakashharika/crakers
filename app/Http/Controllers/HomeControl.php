@@ -505,8 +505,15 @@ public function blogShow($slug)
     }
     public function privacyPolicy()
     {
+        
         $policy = TermsAndPolicy::findOrFail(2); 
         return view('view.policy', compact('policy'));
+    }
+    
+        public function aboutUs()
+    {
+        $about = TermsAndPolicy::findOrFail(3);
+        return view('view.aboutus', compact('about'));
     }
     public function contact()
     {

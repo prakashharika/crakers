@@ -185,7 +185,11 @@
                             <div class="post-property-section-right-content">
                                 <div id="imagePreviewContainer" style="position: relative; display: inline-block;">
                                     <label for="propertyImage" id="uploadLabel" style="cursor: pointer; display: inline-block;">
-                                        <img id="previewImage" src="{{ asset('/images/'.$register->image??'') }}" alt="Post Property Image" style="width: 100%; max-width: 300px;">
+                                       <img id="previewImage"
+                                            src="{{ isset($register) && $register->image ? asset('images/'.$register->image) : asset('images/default.jpg') }}"
+                                            alt="Post Property Image"
+                                            style="width: 100%; max-width: 300px;">
+
                                     </label>
                                     <span id="closeIcon" style="position: absolute; top: 5px; right: 5px; background: red; color: white; padding: 5px; border-radius: 50%; cursor: pointer; display: none;" onclick="removeImage()">×</span>
                                     <input type="file" name="property_image" id="propertyImage" accept="image/*" style="display: none;" onchange="previewFile(event)">
@@ -217,7 +221,7 @@
                     const uploadLabel = document.getElementById('uploadLabel');
                     const inputFile = document.getElementById('propertyImage');
             
-                    preview.src = "{{ asset('/images/'.$register->image??'') }}"; // Reset to default image
+                    preview.src = "{{ isset($register) && $register->image ? asset('images/'.$register->image) : asset('images/default.jpg') }}";
                     closeIcon.style.display = 'none'; // Hide the close icon
                     uploadLabel.style.cursor = 'pointer'; // Enable upload again
                     inputFile.value = ""; // Clear the input file
