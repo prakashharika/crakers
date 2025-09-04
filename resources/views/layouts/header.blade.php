@@ -83,11 +83,11 @@
 
                                         <ul class="select-options">
                                             <li class="link" rel="">
-                                                <a href="{{ route('products.all') }}"><span>All Categories</span></a>
+                                                <a href="{{route('product.categories')}}"><span>All Categories</span></a>
                                             </li>
                                             @foreach($categories as $category)
                                                 <li class="link" rel="{{ $category->slug }}">
-                                                    <a href="{{ route('category.products', ['slug' => $category->slug]) }}">
+                                                    <a href="{{ route('product.category', ['slug' => $category->slug]) }}">
                                                         <span>{{ $category->name }}</span>
                                                     </a>
                                                 </li>
@@ -109,12 +109,6 @@
                                                 <span class="text-sub text-small-2">Hello, sign in</span>
                                                 <span class="h6">Prakash</span>
                                             </div>
-                                        </a>
-                                    </li>
-                                    <li class="d-none d-sm-flex">
-                                        <a class="nav-icon-item-2 text-white link" href="javascript:void(0)">
-                                            <i class="icon icon-heart"></i>
-                                            <span class="count">24</span>
                                         </a>
                                     </li>
                                     <li>
@@ -148,7 +142,7 @@
                                 <ul class="box-nav-category active-item">
                                     @foreach($categories as $category)
                                         <li>
-                                            <a href="{{ route('category.products', ['slug' => $category->slug]) }}" class="nav-category_link h5">
+                                            <a href="{{ route('product.category', ['slug' => $category->slug]) }}" class="nav-category_link h5">
                                                 {{ $category->name }}
                                             </a>
                                         </li>
@@ -160,10 +154,10 @@
                             <nav class="box-navigation">
                                 <ul class="box-nav-menu">
                                     <li class="menu-item">
-                                        <a href="javascript:void(0)" class="item-link">HOME</a>
+                                        <a href="{{route('home')}}" class="item-link">HOME</a>
                                     </li>
                                     <li class="menu-item">
-                                        <a href="javascript:void(0)" class="item-link">CATEGORIES</a>
+                                        <a href="{{route('product.categories')}}" class="item-link">CATEGORIES</a>
                                     </li>
                                     <li class="menu-item position-relative">
                                         <a href="{{ route('about.us.view') }}" class="item-link">ABOUT US</a>
@@ -204,11 +198,11 @@
                            <div class="select-category">
     <ul class="select-options">
         <li class="link" rel="">
-            <a href="{{ route('products.all') }}"><span>All Categories</span></a>
+            <a href="{{route('product.categories')}}"><span>All Categories</span></a>
         </li>
         @foreach($categories as $category)
             <li class="link" rel="{{ $category->slug }}">
-                <a href="{{ route('category.products', ['slug' => $category->slug]) }}">
+                <a href="{{ route('product.category', ['slug' => $category->slug]) }}">
                     <span>{{ $category->name }}</span>
                 </a>
             </li>
@@ -271,7 +265,7 @@
                              <ul class="box-nav-category active-item">
                                     @foreach($categories as $category)
                                         <li>
-                                            <a href="{{ route('category.products', ['slug' => $category->slug]) }}" class="nav-category_link h5">
+                                            <a href="{{ route('product.category', ['slug' => $category->slug]) }}" class="nav-category_link h5">
                                                 {{ $category->name }}
                                             </a>
                                         </li>
@@ -283,13 +277,10 @@
                             <nav class="box-navigation">
                                 <ul class="box-nav-menu">
                                     <li class="menu-item mn-none">
-                                        <a href="javascript:void(0)" class="item-link">HOME</a>
+                                        <a href="{{route('home')}}" class="item-link">HOME</a>
                                     </li>
                                     <li class="menu-item mn-none">
-                                        <a href="javascript:void(0)" class="item-link">SHOP</a>
-                                    </li>
-                                    <li class="menu-item mn-none">
-                                        <a href="javascript:void(0)" class="item-link">CATEGORIES</a>
+                                        <a href="{{route('product.categories')}}" class="item-link">CATEGORIES</a>
                                     </li>
                                     <li class="menu-item mn-none position-relative">
                                         <a href="{{ route('about.us.view') }}" class="item-link">ABOUT US</a>

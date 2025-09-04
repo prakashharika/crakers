@@ -144,6 +144,7 @@
                 url: `{{ url('/admin') }}/sliders`,
                 method: 'GET',
                 success: function(data) {
+                    console.log(data);
                     let html = '';
                     data.forEach(slider => {
                         html += `

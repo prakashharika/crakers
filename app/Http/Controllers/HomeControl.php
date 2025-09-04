@@ -36,28 +36,28 @@ class HomeControl extends Controller
     /**
      * Display a listing of the resource.
      */
-public function blogShow($slug)
-{
-    $blogposts = BlogPost::where('published', true)
-                        ->where('published_at', '<=', now())
-                        ->get();
-    
-    $blogpost = $blogposts->first(function ($post) use ($slug) {
-        return Str::slug($post->title) === $slug;
-    });
-    
-    if (!$blogpost) {
-        abort(404);
+    public function blogShow($slug)
+    {
+        $blogposts = BlogPost::where('published', true)
+            ->where('published_at', '<=', now())
+            ->get();
+
+        $blogpost = $blogposts->first(function ($post) use ($slug) {
+            return Str::slug($post->title) === $slug;
+        });
+
+        if (!$blogpost) {
+            abort(404);
+        }
+
+        // Get recent blogs for sidebar (excluding current post)
+        $recentBlogs = $blogposts->where('id', '!=', $blogpost->id)
+            ->sortByDesc('published_at')
+            ->take(5);
+
+        return view('view.blog-show', compact('blogpost', 'recentBlogs'));
     }
-    
-    // Get recent blogs for sidebar (excluding current post)
-    $recentBlogs = $blogposts->where('id', '!=', $blogpost->id)
-                            ->sortByDesc('published_at')
-                            ->take(5);
-    
-    return view('view.blog-show', compact('blogpost', 'recentBlogs'));
-}
-    
+
     public function search(Request $request)
     {
         $query = $request->input('query');
@@ -77,44 +77,45 @@ public function blogShow($slug)
                 ->orWhere('property_age', 'LIKE', "%{$query}%")
                 ->orWhere('location', 'LIKE', "%{$query}%")
                 ->orWhere('about_property', 'LIKE', "%{$query}%");
-                 })
-                ->where('status', 1) 
-                ->where(function ($queryBuilder) {
-                    $queryBuilder->whereHas('LandOwner.OrderPackage', function ($query) {
-                        $query->where('status', 'active'); // Active order packages
-                    })
-                    ->orWhereNull('land_owner_id'); 
+        })
+            ->where('status', 1)
+            ->where(function ($queryBuilder) {
+                $queryBuilder->whereHas('LandOwner.OrderPackage', function ($query) {
+                    $query->where('status', 'active'); // Active order packages
                 })
-                ->get();
-            foreach ($results as $property) {
-                $property->view_url = route('property-view', [
-                    'slug' => \Hashids::encode($property->id),
-                    'name' => Str::slug($property->title),
-                ]);
-                $images = json_decode($property->images, true);
-                if (is_array($images) && !empty($images)) {
-                    $property->first_image = asset('uploads/properties/images').'/'.$images[0]; 
-                } else {
-                    $property->first_image = null;
-                }
-            }        return response()->json($results); 
+                    ->orWhereNull('land_owner_id');
+            })
+            ->get();
+        foreach ($results as $property) {
+            $property->view_url = route('property-view', [
+                'slug' => \Hashids::encode($property->id),
+                'name' => Str::slug($property->title),
+            ]);
+            $images = json_decode($property->images, true);
+            if (is_array($images) && !empty($images)) {
+                $property->first_image = asset('uploads/properties/images') . '/' . $images[0];
+            } else {
+                $property->first_image = null;
+            }
         }
-        
-      public function blogList()
-{
-    $blogs = BlogPost::where('published', true)
-                    ->where('published_at', '<=', now())
-                    ->orderBy('published_at', 'desc')
-                    ->paginate(9); // Show 9 blogs per page
-    
-    return view('view.blog-list', compact('blogs'));
-}
-        
-        
-        
-        
-        
-    
+        return response()->json($results);
+    }
+
+    public function blogList()
+    {
+        $blogs = BlogPost::where('published', true)
+            ->where('published_at', '<=', now())
+            ->orderBy('published_at', 'desc')
+            ->paginate(9); // Show 9 blogs per page
+
+        return view('view.blog-list', compact('blogs'));
+    }
+
+
+
+
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -129,10 +130,25 @@ public function blogShow($slug)
         $services = Service::all();
         return view('view.post-perperty', compact('services'));
     }
+    public function categories()
+    {
+        $categories = Property::where('status', 1)->orderBy('created_at', 'asc')->get();
+        return view('view.categories', compact('categories'));
+    }
+    public function categoryProducts($slug)
+    {
+        // Fetch one category by slug, along with its products
+        $category = Property::where('slug', $slug)
+            ->where('status', 1)
+            ->with('products') // assumes Property has relation ->products()
+            ->firstOrFail();
+
+        return view('view.category', compact('category'));
+    }
     public function landowner(Request $request)
     {
         // dd($request->all());
-        $validatedData = Validator::make($request->all(),[
+        $validatedData = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:land_owners,email',
             'phone' => 'required|string|max:15',
@@ -142,15 +158,15 @@ public function blogShow($slug)
         if ($validatedData->fails()) {
             return redirect()->back()->withErrors($validatedData->errors())->withInput();
         }
-              $recaptcha_response = $_POST['g-recaptcha-response'];
-        $secret_key ='6LcpU8cqAAAAAHRPmjVS5-aDNgaSCYS6CfkZnucr';
+        $recaptcha_response = $_POST['g-recaptcha-response'];
+        $secret_key = '6LcpU8cqAAAAAHRPmjVS5-aDNgaSCYS6CfkZnucr';
         $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$secret_key&response=$recaptcha_response");
         $response_data = json_decode($response);
-         if (!$response_data->success) {
-        return redirect()->back()->withErrors(['error' => 'reCAPTCHA verification failed.'])->withInput();
+        if (!$response_data->success) {
+            return redirect()->back()->withErrors(['error' => 'reCAPTCHA verification failed.'])->withInput();
         }
 
-        $data =[
+        $data = [
             'name' => $request->name,
             'email' => $request->email,
             'city' => $request->city,
@@ -163,53 +179,53 @@ public function blogShow($slug)
     }
     public function choosePackage()
     {
-       
-        $package1 = Package::find(1); 
-        $package2 = Package::find(2); 
-        $package3 = Package::find(3); 
+
+        $package1 = Package::find(1);
+        $package2 = Package::find(2);
+        $package3 = Package::find(3);
         $services = Service::all();
         $landownerId = session('landowner_id');
-        return view('view.choose-package', compact('services','package1','package2','package3'));
+        return view('view.choose-package', compact('services', 'package1', 'package2', 'package3'));
     }
 
-        public function updatelandownerPackage($id)
-        {
-            if(Auth::guard('seller')->check()){
-                $user = Auth::guard('seller')->user();
-                $timestamp = now()->format('Ymd'); 
-                $userType = 'S1';
-                $order_id = $user->id .'ORD' . $id . 'ID' . $timestamp. $userType;
-                return redirect()->route('order.package',['id' => $order_id]);
-            }else{
-                $landownerId = session('landowner_id');
+    public function updatelandownerPackage($id)
+    {
+        if (Auth::guard('seller')->check()) {
+            $user = Auth::guard('seller')->user();
+            $timestamp = now()->format('Ymd');
+            $userType = 'S1';
+            $order_id = $user->id . 'ORD' . $id . 'ID' . $timestamp . $userType;
+            return redirect()->route('order.package', ['id' => $order_id]);
+        } else {
+            $landownerId = session('landowner_id');
             //     $landowner = LandOwner::find($landownerId);
             // if ($landowner) {
-                //     $landowner->package_id = $id;
+            //     $landowner->package_id = $id;
             //     $landowner->update();
             //     session()->flash('success', 'Thank you for choosing the package.');
             //     return redirect()->route('choose.package');
             // }
-            $timestamp = now()->format('Ymd'); 
+            $timestamp = now()->format('Ymd');
             $userType = 'S0';
-            $order_id = $landownerId . 'ORD' . $id . 'ID' .$timestamp . $userType;
-            return redirect()->route('order.package',['id' => $order_id]);
+            $order_id = $landownerId . 'ORD' . $id . 'ID' . $timestamp . $userType;
+            return redirect()->route('order.package', ['id' => $order_id]);
         }
         session()->flash('error', 'Landowner not found.');
         return redirect()->route('choose.package');
     }
-    
+
     public function orderResponse($id)
     {
         try {
             $parsed = $this->parseOrderId($id);
             $landownerId = $parsed['user_id'];
             $package_id = $parsed['package_id'];
-    
+
             $package = Package::find($package_id);
             if (!$package) {
                 return redirect()->back()->with('error', 'Package not found.');
             }
-    
+
             if ($parsed['is_old_user']) {
                 $landowner = OrderPackage::where('land_owner_id', $landownerId)
                     ->where('payment_status', 'success')
@@ -217,7 +233,7 @@ public function blogShow($slug)
                     ->first();
                 if (isset($landowner)) {
                     $expire = Carbon::parse($landowner->expire_date)->addDays($package->property_visibility_days);
-                    $start_date = Carbon::parse($landowner->expire_date); 
+                    $start_date = Carbon::parse($landowner->expire_date);
                     $order = OrderPackage::create([
                         'land_owner_id' => $landownerId,
                         'package_id' => $package_id,
@@ -286,7 +302,7 @@ public function blogShow($slug)
                     'start_date' => $start_date,
                     'expire_date' => $expire,
                 ]);
-    
+
                 $landowner = LandOwner::find($landownerId);
                 if ($landowner) {
                     $landowner->package_id = $order->id;
@@ -301,47 +317,49 @@ public function blogShow($slug)
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
     }
-    
+
     /**
      * Store a newly created resource in storage.
      */
-    public function propertyView($slug,$name)
+    public function propertyView($slug, $name)
     {
         $id = \Vinkla\Hashids\Facades\Hashids::decode($slug);
-        
+
         if (empty($id)) {
-            abort(404); 
+            abort(404);
         }
         $property = PropertiesList::where('id', $id[0])
-            ->where('status', 1) 
+            ->where('status', 1)
             ->where(function ($query) {
                 $query->whereHas('LandOwner.OrderPackage', function ($query) {
-                    $query->where('status', 'active'); 
+                    $query->where('status', 'active');
                 })
-                ->orWhereNull('land_owner_id'); 
+                    ->orWhereNull('land_owner_id');
             })
-            ->first(); 
+            ->first();
 
-            if (!$property) {
-                abort(404);
-            }
+        if (!$property) {
+            abort(404);
+        }
         $similarProperties = Property::where('id', $property->property_id)
-            ->with(['PropertiesList' => function ($query) {
-                $query->where('status', 1);
-            }])
+            ->with([
+                'PropertiesList' => function ($query) {
+                    $query->where('status', 1);
+                }
+            ])
             ->limit(50)
             ->orderByDesc('created_at')
             ->get();
 
-        $futuredProperties = PropertiesList::where('status',1)
-            ->where('future_property',1)
+        $futuredProperties = PropertiesList::where('status', 1)
+            ->where('future_property', 1)
             ->limit(50)
             ->orderByDesc('created_at')
             ->get();
-        return view('view.property-view', compact('property', 'similarProperties','futuredProperties' ));
-    
+        return view('view.property-view', compact('property', 'similarProperties', 'futuredProperties'));
+
     }
-    
+
     /**
      * Display the specified resource.
      */
@@ -352,7 +370,7 @@ public function blogShow($slug)
     }
     public function sellerLog(Request $request)
     {
-        $validatedData = Validator::make($request->all(),[
+        $validatedData = Validator::make($request->all(), [
             'email' => 'required|email',
         ]);
         if ($validatedData->fails()) {
@@ -361,9 +379,9 @@ public function blogShow($slug)
         $owner = LandOwner::where('email', $request->email)->first();
 
         if ($owner) {
-            $otp = Str::random(6); 
-    
-            $owner->otp = Hash::make($otp); 
+            $otp = Str::random(6);
+
+            $owner->otp = Hash::make($otp);
             $owner->save();
             session(['email' => $request->email, 'otp' => $otp]);
             Mail::to($request->email)->send(new SendOtpMail($otp));
@@ -381,12 +399,12 @@ public function blogShow($slug)
         $request->validate([
             'otp' => 'required|string|max:6',
         ]);
-    
+
         $sessionOtp = session('otp');
         $email = session('email');
-    
+
         $owner = LandOwner::where('email', $email)->first();
-    
+
         if ($owner && Hash::check($request->otp, $owner->otp)) {
             Auth::guard('seller')->login($owner);
             return redirect()->route('seller.dashboard')->with('success', 'OTP verified successfully!');
@@ -394,7 +412,7 @@ public function blogShow($slug)
             return redirect()->back()->with('error', 'Invalid OTP. Please try again.');
         }
     }
-     public function redirectToGoogle()
+    public function redirectToGoogle()
     {
         return FacadesSocialite::driver('google')->redirect();
     }
@@ -429,7 +447,7 @@ public function blogShow($slug)
             } catch (\Exception $e) {
                 return redirect()->back()->with('error', 'Failed to send OTP. Error: ' . $e->getMessage());
             }
-                        return redirect()->back()->with('success', 'A new OTP has been sent to your email!');
+            return redirect()->back()->with('success', 'A new OTP has been sent to your email!');
         } else {
             return redirect()->back()->with('error', 'No user found with this email.');
         }
@@ -441,8 +459,8 @@ public function blogShow($slug)
     public function logout(Request $request)
     {
         Auth::guard('seller')->logout();
-           $request->session()->invalidate();
-              $request->session()->regenerateToken();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return redirect()->route('seller.login');
     }
     public function adminlogout(Request $request)
@@ -466,30 +484,30 @@ public function blogShow($slug)
     public function parseOrderId($order_id)
     {
         $parts = explode('ORD', $order_id);
-    
+
         if (count($parts) !== 2) {
             throw new Exception('Invalid order ID format');
         }
-    
-        $user_id = intval($parts[0]); 
+
+        $user_id = intval($parts[0]);
         $package_and_remaining = $parts[1];
-    
+
         $id_parts = explode('ID', $package_and_remaining);
-    
+
         if (count($id_parts) !== 2) {
             throw new Exception('Invalid order ID format: Missing ID marker');
         }
-    
-        $package_id = intval($id_parts[0]); 
+
+        $package_id = intval($id_parts[0]);
         $timestamp_and_user_type = $id_parts[1];
-    
+
         $timestamp_length = 8;
         $user_type_length = 2;
         $timestamp = substr($timestamp_and_user_type, 0, $timestamp_length);
         $user_type = substr($timestamp_and_user_type, -$user_type_length);
-    
+
         $is_old_user = $user_type === 'S1';
-    
+
         return [
             'user_id' => $user_id,
             'package_id' => $package_id,
@@ -497,7 +515,7 @@ public function blogShow($slug)
             'is_old_user' => $is_old_user,
         ];
     }
-    
+
     public function termsConditions()
     {
         $terms = TermsAndPolicy::findOrFail(1);
@@ -505,12 +523,12 @@ public function blogShow($slug)
     }
     public function privacyPolicy()
     {
-        
-        $policy = TermsAndPolicy::findOrFail(2); 
+
+        $policy = TermsAndPolicy::findOrFail(2);
         return view('view.policy', compact('policy'));
     }
-    
-        public function aboutUs()
+
+    public function aboutUs()
     {
         $about = TermsAndPolicy::findOrFail(3);
         return view('view.aboutus', compact('about'));
@@ -518,50 +536,50 @@ public function blogShow($slug)
     public function contact()
     {
         $genaral = GeneralDetail::find(1);
-        return view('view.contact',compact('genaral'));
+        return view('view.contact', compact('genaral'));
     }
     public function sales($slug = null)
     {
         if ($slug) {
-                return view('view.sales',compact('slug'));
+            return view('view.sales', compact('slug'));
         } else {
             return view('view.sales');
         }
     }
     public function enquire(Request $request)
     {
-            $validated = $request->validate([
-                'name' => 'required|string|max:255',              
-                'email' => 'required|email|max:255',              
-                'phone' => 'required|digits:10',                  
-                'city' => 'required|string|max:255',              
-                'pro_id' => 'nullable|string',                  
-                'isthiswhatsapp' => 'nullable|in:on,off', 
-            ]);
-            $id = $validated['pro_id'] ? Hashids::decode($validated['pro_id']) : null;
-            if ($id && count($id) > 0) {
-                $id = $id[0]; 
-            } else {
-                $id = null;  
-            }
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|digits:10',
+            'city' => 'required|string|max:255',
+            'pro_id' => 'nullable|string',
+            'isthiswhatsapp' => 'nullable|in:on,off',
+        ]);
+        $id = $validated['pro_id'] ? Hashids::decode($validated['pro_id']) : null;
+        if ($id && count($id) > 0) {
+            $id = $id[0];
+        } else {
+            $id = null;
+        }
         $recaptcha_response = $_POST['g-recaptcha-response'];
-        $secret_key ='6LcpU8cqAAAAAHRPmjVS5-aDNgaSCYS6CfkZnucr';
+        $secret_key = '6LcpU8cqAAAAAHRPmjVS5-aDNgaSCYS6CfkZnucr';
         $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$secret_key&response=$recaptcha_response");
         $response_data = json_decode($response);
         if (!$response_data->success) {
-                return redirect()->back()->with('error', 'reCAPTCHA verification failed.');
-            }
-        
-            $sale = Sale::create([
-                'name' => $validated['name'],
-                'email' => $validated['email'],
-                'phone' => $validated['phone'],
-                'city' => $validated['city'],
-                'pro_id' => $id,  
-                'isthiswhatsapp' => $validated['isthiswhatsapp'] ?? 'off',  
-            ]);
-        
-            return redirect()->back()->with('success', 'Request Sent Successfully.');
+            return redirect()->back()->with('error', 'reCAPTCHA verification failed.');
+        }
+
+        $sale = Sale::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'],
+            'city' => $validated['city'],
+            'pro_id' => $id,
+            'isthiswhatsapp' => $validated['isthiswhatsapp'] ?? 'off',
+        ]);
+
+        return redirect()->back()->with('success', 'Request Sent Successfully.');
     }
     public function userEnquiry(Request $request)
     {
@@ -571,7 +589,7 @@ public function blogShow($slug)
             'phone' => 'required|string|max:15',
             'message' => 'required'
         ]);
-        
+
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator->errors())->withInput();
         }
@@ -589,5 +607,5 @@ public function blogShow($slug)
             ])->withInput();
         }
     }
-    
+
 }

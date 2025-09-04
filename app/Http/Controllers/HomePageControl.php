@@ -15,7 +15,8 @@ class HomePageControl extends Controller
     {
         $sliders = Slider::all();
         $register = RegisterPost::where('id', 1)->first();
-        return response()->json($sliders,'register');
+        return response()->json($sliders, 200);
+
     }
     public function list()
     {
@@ -23,13 +24,13 @@ class HomePageControl extends Controller
     }
     public function registerPost()
     {
-        $register = RegisterPost::where('id',1)->first();
-        return view('admin.register-to-post',compact('register'));
+        $register = RegisterPost::where('id', 1)->first();
+        return view('admin.register-to-post', compact('register'));
     }
     public function generalDetails()
     {
-        $general = GeneralDetail::where('id',1)->first();
-        return view('admin.general-details',compact('general'));
+        $general = GeneralDetail::where('id', 1)->first();
+        return view('admin.general-details', compact('general'));
     }
     public function registerPostStore(Request $request)
     {
@@ -41,37 +42,37 @@ class HomePageControl extends Controller
                 'btn' => 'required|string',
                 'property_image' => 'nullable|image|mimes:jpg,png,jpeg,gif,webp',
             ]);
-    
+
             // Retrieve the existing record
             $slider = RegisterPost::find(1);
-    
+
             if (!$slider) {
                 return redirect()->back()->withErrors('Register Property Section not found.');
             }
-    
+
             // Check if an image is uploaded and update only if it exists
             if ($request->hasFile('property_image')) {
                 // Delete the old image if it exists
                 if ($slider->image && file_exists(public_path('images/' . $slider->image))) {
                     unlink(public_path('images/' . $slider->image));
                 }
-    
+
                 // Upload the new image
                 $imageName = time() . '.' . $request->file('property_image')->extension();
                 $request->file('property_image')->move(public_path('images'), $imageName);
-    
+
                 // Update the image field
                 $slider->image = $imageName;
             }
-    
+
             // Update other fields
             $slider->title = $request->title;
             $slider->subtitle = $request->subtitle;
             $slider->btn = $request->btn;
-    
+
             // Save the changes
             $slider->save();
-    
+
             return redirect()->back()->with('success', 'Register Property Section updated successfully!');
         } catch (\Exception $e) {
             \Log::error('Register Property Section failed: ' . $e->getMessage());
@@ -94,13 +95,13 @@ class HomePageControl extends Controller
                 'map' => 'required',
                 'property_image' => 'nullable|image|mimes:jpg,png,jpeg,gif,webp',
             ]);
-    
+
             $slider = GeneralDetail::find(1);
-    
+
             if (!$slider) {
                 return redirect()->back()->withErrors(' General Information not found.');
             }
-    
+
             if ($request->hasFile('property_image')) {
                 if ($slider->image && file_exists(public_path('images/' . $slider->image))) {
                     unlink(public_path('images/' . $slider->image));
@@ -109,9 +110,9 @@ class HomePageControl extends Controller
                 $request->file('property_image')->move(public_path('images'), $imageName);
                 $slider->logo = $imageName;
             }
-    
-            $slider->address = $request->address; 
-            $slider->description = $request->description; 
+
+            $slider->address = $request->address;
+            $slider->description = $request->description;
             $slider->email = $request->email;
             $slider->phone = $request->phone;
             $slider->instagram = $request->instagram;
@@ -120,15 +121,14 @@ class HomePageControl extends Controller
             $slider->facebook = $request->facebook;
             $slider->embaded = $request->map;
             $slider->save();
-    
+
             return redirect()->back()->with('success', 'General Information updated successfully!');
         } catch (\Exception $e) {
-dd($e->getMessage());
             \Log::error('General Information failed: ' . $e->getMessage());
             return redirect()->back()->withErrors('Failed to update General Information. Please try again.');
         }
     }
-    
+
 
     public function show($id)
     {
@@ -145,7 +145,7 @@ dd($e->getMessage());
             'description' => 'required|string',
         ]);
 
-        $imageName = time().'.'.$request->image->extension();
+        $imageName = time() . '.' . $request->image->extension();
         $request->image->move(public_path('images'), $imageName);
 
         $slider = Slider::create([
@@ -161,42 +161,42 @@ dd($e->getMessage());
     public function update(Request $request, $id)
     {
         $slider = Slider::findOrFail($id);
-    
+
         Log::info("Request Data: ", $request->all()); // Debug request data
         Log::info("ID: " . $id);
-    
+
         $validated = $request->validate([
             'image' => 'nullable|image|mimes:jpg,png,jpeg,gif',
             'title' => 'required|string',
             'description' => 'required|string',
         ]);
-    
+
         if ($request->hasFile('image')) {
             $imageName = time() . '.' . $request->image->extension();
             $request->image->move(public_path('images'), $imageName);
             $slider->image = $imageName;
         }
-    
+
         $slider->title = $request->title;
         $slider->description = $request->description;
-    
+
         $slider->save();
-    
+
         return response()->json($slider);
     }
-    
+
 
     // Delete slider
     public function destroy($id)
     {
         $slider = Slider::findOrFail($id);
         $slider->delete();
-        
+
         return response()->json('Slider deleted successfully');
     }
     public function termsConditions()
     {
-       
+
         $terms = TermsAndPolicy::findOrFail(1); // Fetch terms using the model
         return view('admin.terms', compact('terms'));
     }
@@ -204,15 +204,15 @@ dd($e->getMessage());
     // Display Privacy Policy
     public function privacyPolicy()
     {
-        $policy = TermsAndPolicy::findOrFail(2); 
+        $policy = TermsAndPolicy::findOrFail(2);
         return view('admin.policy', compact('policy'));
     }
 
     public function aboutUs()
-{
-    $about = TermsAndPolicy::findOrFail(3);
-    return view('admin.aboutus', compact('about'));
-}
+    {
+        $about = TermsAndPolicy::findOrFail(3);
+        return view('admin.aboutus', compact('about'));
+    }
 
     public function termsConditionsUpdate(Request $request)
     {
@@ -254,22 +254,22 @@ dd($e->getMessage());
     }
 
     public function aboutUsUpdate(Request $request)
-{
-    $validated = $request->validate([
-        'about_us' => 'required|string',
-    ]);
+    {
+        $validated = $request->validate([
+            'about_us' => 'required|string',
+        ]);
 
-    try {
-        TermsAndPolicy::updateOrCreate(
-            ['id' => 3], // ID for About Us
-            ['content' => $validated['about_us'], 'updated_at' => now()]
-        );
+        try {
+            TermsAndPolicy::updateOrCreate(
+                ['id' => 3], // ID for About Us
+                ['content' => $validated['about_us'], 'updated_at' => now()]
+            );
 
-        return redirect()->back()->with('success', 'About Us updated successfully!');
-    } catch (\Exception $e) {
-        \Log::error('About Us update failed: ' . $e->getMessage());
-        return redirect()->back()->withErrors('Failed to update About Us. Please try again.');
+            return redirect()->back()->with('success', 'About Us updated successfully!');
+        } catch (\Exception $e) {
+            \Log::error('About Us update failed: ' . $e->getMessage());
+            return redirect()->back()->withErrors('Failed to update About Us. Please try again.');
+        }
     }
-}
 
 }
