@@ -43,7 +43,7 @@
                     <div class="col-xl-6 col-lg-4 d-none d-lg-block">
                         <ul class="topbar-right topbar-option-list">
                             <li class="h6">
-                                    <a href="javascript:void(0)" class="text-white link">Free Shipping for orders over $150</a>
+                                    <a href="javascript:void(0)" class="text-white link">Free Shipping for orders over ₹150</a>
                                 </li>
                         </ul>
                     </div>
@@ -193,7 +193,7 @@
                         <div class="col-right">
                             <i class="icon icon-truck"></i>
                             <p class="h6 text-black">
-                                Free Shipping for orders over <span class="fw-bold text-primary">$150</span>
+                                Free Shipping for orders over <span class="fw-bold text-primary">₹150</span>
                             </p>
                         </div>
                     </div>
@@ -316,7 +316,7 @@
                         <div class="col-right">
                             <i class="icon icon-truck"></i>
                             <p class="h6 text-black">
-                                Free Shipping for orders over Freeeeeeee 1d<span class="fw-bold text-primary">$150</span>
+                                Free Shipping for orders over Free 1d<span class="fw-bold text-primary">₹150</span>
                             </p>
                         </div>
                     </div>
