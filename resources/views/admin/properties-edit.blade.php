@@ -132,9 +132,10 @@ button.btn.btn-danger.mt-2 {
             <div class="card p-5">
 
             <div class="d-flex justify-content-end mb-3">
-                <a href="{{ route('products.index') }}" class="btn btn-secondary">
-                    ← Back to List
-                </a>
+               <a href="javascript:history.back()" class="btn btn-secondary">
+                        ← Back to List
+                    </a>
+
             </div>
 
         <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
