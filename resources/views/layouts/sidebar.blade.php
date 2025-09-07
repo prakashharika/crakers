@@ -13,6 +13,9 @@
   .sidebar-body::-webkit-scrollbar-thumb {
     background: #A8A8A8;
   } */
+    .main.main-app{
+      background: #e5e5e5 !important;
+    }
   </style>
   <div class="sidebar">
       <div class="sidebar-header d-flex justify-content-center">
