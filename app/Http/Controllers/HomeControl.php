@@ -420,25 +420,95 @@ class HomeControl extends Controller
     }
     public function handleGoogleCallback(Request $request)
     {
-        $client = new \GuzzleHttp\Client(['verify' => false]);
-        $googleUser = FacadesSocialite::with('google')->setHttpClient($client)->user();
 
-        // dd($googleUser);
-        $owner = Buyer::where('email', $googleUser->email)->first();
-        if ($owner) {
+        try {
+            $client = new \GuzzleHttp\Client([
+                'verify' => false, // Disable SSL verification
+                'curl' => [
+                    CURLOPT_SSL_VERIFYPEER => false,
+                    CURLOPT_SSL_VERIFYHOST => false,
+                ]
+            ]);
+
+            config(['socialite.google.guzzle' => ['verify' => false]]);
+
+            $googleUser = FacadesSocialite::driver('google')
+                ->setHttpClient($client)
+                ->user();
+
+            Log::debug('Google user data received', [
+                'email' => $googleUser->getEmail(),
+                'name' => $googleUser->getName(),
+                'id' => $googleUser->getId()
+            ]);
+
+            $owner = Buyer::where('email', $googleUser->getEmail())->first();
+
+            if ($owner) {
+            } else {
+
+                $owner = $this->createNewUserFromGoogle($googleUser);
+
+                if ($owner) {
+                } else {
+                    Log::error('Failed to create new user');
+                    throw new \Exception('Failed to create user account');
+                }
+            }
+
+            // Step 5: Log the user in
             Auth::guard('seller')->login($owner);
-            // $user = Auth::guard('seller')->user();
 
+            if (Auth::guard('seller')->check()) {
+                Log::info('User logged in successfully', ['user_id' => $owner->id]);
+            } else {
+                Log::error('Login failed - authentication check failed');
+                throw new \Exception('Login authentication failed');
+            }
+
+            // Step 6: Check cart and redirect
             $cart = session('cart', []);
 
-            if (!empty($cart)) {
-                return redirect()->route('cart.view')->with('success', 'Login successfully!');
-            } else {
-                return redirect()->route('home')->with('success', 'Login successfully!');
-            }
-        } else {
-            return redirect()->route('post.property')->withErrors(['error' => 'Your Account Information is not with us. Please do register!']);
+            $redirectRoute = !empty($cart) ? 'cart.view' : 'home';
+
+            return redirect()->route($redirectRoute)->with('success', 'Login successfully!');
+
+        } catch (\Exception $e) {
+            Log::error('Google OAuth Callback Error: ' . $e->getMessage(), [
+                'exception' => $e,
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return redirect()->route('user.login')->withErrors([
+                'error' => 'Google authentication failed. Please try again.'
+            ]);
         }
+    }
+
+
+    /**
+     * Create a new user from Google OAuth data
+     */
+    protected function createNewUserFromGoogle($googleUser)
+    {
+        // Generate a random password for the new user
+        $randomPassword = Hash::make(Str::random(12));
+
+        // Create the new user
+        $user = Buyer::create([
+            'name' => $googleUser->getName(),
+            'email' => $googleUser->getEmail(),
+            'password' => $randomPassword,
+            'phone_number' => null, // Google doesn't provide phone number
+            'city' => null,
+            'status' => 'active',
+            // Add any other required fields with default values
+        ]);
+
+        // You might want to send a welcome email here
+        // $this->sendWelcomeEmail($user);
+
+        return $user;
     }
 
     /**
