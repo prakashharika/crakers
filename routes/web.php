@@ -12,6 +12,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PropertyControl;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ServicesControl;
+use App\Http\Controllers\CheckoutController;
 use App\Models\Advertisement;
 use App\Models\BlogPost;
 use App\Models\OrderPackage;
@@ -63,15 +64,16 @@ Route::get('/cart/content', [CartController::class, 'getCartContent'])->name('ca
 Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
 Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update');
 Route::get('/checkout', function () {
-    $blogs = BlogPost::latest()->take(3)->get();
-    $categories = Property::where('status', 1)->orderBy('created_at', 'asc')->take(9)->get();
-    $categories2 = Property::where('status', 1)->orderBy('created_at', 'desc')->take(9)->get();
-    $slider = Slider::latest()->get();
-    // dd(session()->get('cart', []));
+    // date-order-id
+    //order - id , order_id, product id, quantity, price, payment_status, user_id, address id
+    //address - id, user id, name, phone, address, pincode
+    dd(session()->get('cart', []));
 
-
-    return view('welcome', compact('blogs', 'categories', 'slider', 'categories2'));
 })->name('checkout');
+
+Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout');
+Route::post('/checkout', [CheckoutController::class, 'placeOrder'])->name('checkout.place');
+
 
 Route::get('/blog/{slug}', [HomeControl::class, 'blogShow'])->name('blog-user.show');
 Route::get('/blogs', [HomeControl::class, 'blogList'])->name('blog.list');

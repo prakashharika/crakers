@@ -107,9 +107,9 @@
                 <div class="cart-summary">
                     <h3 class="mb-4">Order Summary</h3>
                     
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Subtotal ({{ $cartCount }} items)</span>
-                        <span>₹{{ number_format($cartTotal, 2) }}</span>
+                     <div class="d-flex justify-content-between mb-2">
+                        <span class="cart-subtotal-label">Subtotal ({{ $cartCount }} items)</span>
+                        <span class="cart-subtotal-value">₹{{ number_format($cartTotal, 2) }}</span>
                     </div>
                     
                     <div class="d-flex justify-content-between mb-2">
@@ -117,17 +117,17 @@
                         <span class="text-success">Free</span>
                     </div>
                     
-                    <div class="d-flex justify-content-between mb-2">
+                    <!-- <div class="d-flex justify-content-between mb-2">
                         <span>Tax</span>
-                        <span>₹{{ number_format($cartTotal * 0.18, 2) }}</span> <!-- Assuming 18% tax -->
-                    </div>
+                        <span>₹{{ number_format($cartTotal * 0.18, 2) }}</span> Assuming 18% tax
+                    </div> -->
                     
                     <hr>
                     
-                    <div class="d-flex justify-content-between mb-4">
-                        <strong>Total</strong>
-                        <strong>₹{{ number_format($cartTotal * 1.18, 2) }}</strong>
-                    </div>
+                   <div class="d-flex justify-content-between mb-4">
+                    <strong>Total</strong>
+                    <strong class="cart-total-value">₹{{ number_format($cartTotal, 2) }}</strong>
+                </div>
                     
                     <a href="{{ route('checkout') }}" class="btn btn-primary w-100 mb-3">Proceed to Checkout</a>
                     <a href="{{ url('/') }}" class="btn btn-outline-secondary w-100">Continue Shopping</a>
@@ -294,30 +294,25 @@ function updateCartQuantity(productId, quantity) {
         }
         
         function updateCartSummary(data) {
-            // Update subtotal
-            const subtotalElement = document.querySelector('.cart-summary .d-flex:first-child span:last-child');
-            if (subtotalElement) {
-                subtotalElement.textContent = '₹' + data.cart_total.toFixed(2);
+                // Update subtotal value
+                const subtotalValue = document.querySelector('.cart-subtotal-value');
+                if (subtotalValue) {
+                    subtotalValue.textContent = '₹' + data.cart_total.toFixed(2);
+                }
+
+                // Update total value
+                const totalValue = document.querySelector('.cart-total-value');
+                if (totalValue) {
+                    totalValue.textContent = '₹' + data.cart_total.toFixed(2);
+                }
+
+                // Update item count in subtotal label
+                const subtotalLabel = document.querySelector('.cart-subtotal-label');
+                if (subtotalLabel) {
+                    subtotalLabel.textContent = `Subtotal (${data.cart_count} items)`;
+                }
             }
-            
-            // Update tax
-            const taxElement = document.querySelector('.cart-summary .d-flex:nth-child(3) span:last-child');
-            if (taxElement) {
-                taxElement.textContent = '₹' + (data.cart_total * 0.18).toFixed(2);
-            }
-            
-            // Update total
-            const totalElement = document.querySelector('.cart-summary .d-flex:last-child strong:last-child');
-            if (totalElement) {
-                totalElement.textContent = '₹' + (data.cart_total * 1.18).toFixed(2);
-            }
-            
-            // Update item count
-            const itemCountElement = document.querySelector('.cart-summary .d-flex:first-child span:first-child');
-            if (itemCountElement) {
-                itemCountElement.textContent = `Subtotal (${data.cart_count} items)`;
-            }
-        }
+
         
         function updateCartCount(count) {
             const cartCountElements = document.querySelectorAll('.cart-count');
