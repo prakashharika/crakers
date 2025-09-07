@@ -43,7 +43,7 @@
                     <div class="col-xl-6 col-lg-4 d-none d-lg-block">
                         <ul class="topbar-right topbar-option-list">
                             <li class="h6">
-                                    <a href="javascript:void(0)" class="text-white link">Free Shipping for orders over ₹150</a>
+                                    <a href="javascript:void(0)" class="text-white link">Free Shipping for orders over ₹ 150</a>
                                 </li>
                         </ul>
                     </div>
