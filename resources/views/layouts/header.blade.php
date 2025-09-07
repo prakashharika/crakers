@@ -316,7 +316,7 @@
                         <div class="col-right">
                             <i class="icon icon-truck"></i>
                             <p class="h6 text-black">
-                                Free Shipping for orders over Free 1d<span class="fw-bold text-primary">₹150</span>
+                                Free Shipping for orders over Free <span class="fw-bold text-primary">₹150</span>
                             </p>
                         </div>
                     </div>
