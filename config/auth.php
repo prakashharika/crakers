@@ -35,24 +35,20 @@ return [
     |
     */
 
-        'guards' => [
-            'web' => [
-                'driver' => 'session',
-                'provider' => 'users',
-            ],
-            'seller' => [
-                'driver' => 'session',
-                'provider' => 'sellers',
-            ],
-            // 'admin' => [
-            //     'driver' => 'session',
-            //     'provider' => 'users',
-            // ],
-            'buyer' => [
+    'guards' => [
+        'web' => [
             'driver' => 'session',
-            'provider' => 'buyers',
+            'provider' => 'users',
         ],
+        'seller' => [
+            'driver' => 'session',
+            'provider' => 'sellers',
         ],
+        // 'admin' => [
+        //     'driver' => 'session',
+        //     'provider' => 'users',
+        // ],
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -83,17 +79,12 @@ return [
         // ],
         'sellers' => [
             'driver' => 'eloquent',
-            'model' => App\Models\LandOwner::class,
+            'model' => App\Models\Buyer::class,
         ],
         // 'admins' => [
         //     'driver' => 'eloquent',
         //     'model' => App\Models\User::class,
         // ],
-
-        'buyers' => [
-        'driver' => 'eloquent',
-        'model' => App\Models\Buyer::class,
-    ],
     ],
 
     /*

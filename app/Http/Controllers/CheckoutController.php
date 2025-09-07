@@ -30,57 +30,57 @@ class CheckoutController extends Controller
      * Handle placing the order
      */
     public function placeOrder(Request $request)
-{
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'phone' => 'required|string|max:20',
-        'address' => 'required|string|max:1000',
-        'pincode' => 'required|string|max:10',
-    ]);
-
-    $buyer = Auth::guard('buyer')->user();
-
-    if (!$buyer) {
-        return redirect()->route('login')->with('error', 'Please login to place your order.');
-    }
-
-    $cart = session('cart', []);
-
-    if (empty($cart)) {
-        return redirect()->route('checkout')->with('error', 'Your cart is empty.');
-    }
-
-    // 1. Save the address
-    $address = Address::create([
-        'buyer_id' => $buyer->id,
-        'name' => $request->name,
-        'phone' => $request->phone,
-        'address' => $request->address,
-        'pincode' => $request->pincode,
-    ]);
-
-    // 2. Generate unique order ID
-    $orderId = 'ORD-' . now()->format('YmdHis') . '-' . rand(1000, 9999);
-
-    // 3. Store each product in the order
-    foreach ($cart as $productId => $item) {
-        Order::create([
-            'order_id' => $orderId,
-            'product_id' => $productId,
-            'quantity' => $item['quantity'],
-            'price' => $item['price'],
-            'payment_status' => 'pending', // or 'paid'
-            'buyer_id' => $buyer->id,
-            'address_id' => $address->id,
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'address' => 'required|string|max:1000',
+            'pincode' => 'required|string|max:10',
         ]);
+
+        $buyer = Auth::guard('seller')->user();
+
+        if (!$buyer) {
+            return redirect()->route('login')->with('error', 'Please login to place your order.');
+        }
+
+        $cart = session('cart', []);
+
+        if (empty($cart)) {
+            return redirect()->route('checkout')->with('error', 'Your cart is empty.');
+        }
+        // dd($buyer->id);
+        // 1. Save the address
+        $address = Address::create([
+            'buyer_id' => $buyer->id,
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'pincode' => $request->pincode,
+        ]);
+
+        // 2. Generate unique order ID
+        $orderId = 'ORD-' . now()->format('YmdHis') . '-' . rand(1000, 9999);
+
+        // 3. Store each product in the order
+        foreach ($cart as $productId => $item) {
+            Order::create([
+                'order_id' => $orderId,
+                'product_id' => $productId,
+                'quantity' => $item['quantity'],
+                'price' => $item['price'],
+                'payment_status' => 'pending', // or 'paid'
+                'buyer_id' => $buyer->id,
+                'address_id' => $address->id,
+            ]);
+        }
+
+        // 4. Clear the cart
+        session()->forget('cart');
+
+        // 5. Redirect with success message
+        return redirect('/')->with('success', 'Order placed successfully!');
     }
-
-    // 4. Clear the cart
-    session()->forget('cart');
-
-    // 5. Redirect with success message
-    return redirect('/')->with('success', 'Order placed successfully!');
-}
 
 
     /**

@@ -11,7 +11,9 @@ use App\Mail\SendOtpMail;
 use App\Mail\SendMail;
 use App\Models\Advertisement;
 use App\Models\BlogPost;
+use App\Models\Buyer;
 use App\Models\GeneralDetail;
+use App\Models\Order;
 use App\Models\OrderPackage;
 use App\Models\Package;
 use App\Models\Sale;
@@ -173,7 +175,7 @@ class HomeControl extends Controller
             'phone_number' => $request->phone,
             'is_this_whatsapp' => $request->isthiswhatsapp ?? 'off',
         ];
-        $services = LandOwner::create($data);
+        $services = Buyer::create($data);
         session(['landowner_id' => $services->id]);
         return redirect()->route('choose.package');
     }
@@ -198,7 +200,7 @@ class HomeControl extends Controller
             return redirect()->route('order.package', ['id' => $order_id]);
         } else {
             $landownerId = session('landowner_id');
-            //     $landowner = LandOwner::find($landownerId);
+            //     $landowner = Buyer::find($landownerId);
             // if ($landowner) {
             //     $landowner->package_id = $id;
             //     $landowner->update();
@@ -271,7 +273,7 @@ class HomeControl extends Controller
                         'start_date' => $start_date,
                         'expire_date' => $expire,
                     ]);
-                    $landowner = LandOwner::find($landownerId);
+                    $landowner = Buyer::find($landownerId);
                     if ($landowner) {
                         $landowner->package_id = $order->id;
                         $landowner->status = '1';
@@ -303,7 +305,7 @@ class HomeControl extends Controller
                     'expire_date' => $expire,
                 ]);
 
-                $landowner = LandOwner::find($landownerId);
+                $landowner = Buyer::find($landownerId);
                 if ($landowner) {
                     $landowner->package_id = $order->id;
                     $landowner->status = '1';
@@ -376,7 +378,7 @@ class HomeControl extends Controller
         if ($validatedData->fails()) {
             return redirect()->back()->withErrors($validatedData->errors())->withInput();
         }
-        $owner = LandOwner::where('email', $request->email)->first();
+        $owner = Buyer::where('email', $request->email)->first();
 
         if ($owner) {
             $otp = Str::random(6);
@@ -403,7 +405,7 @@ class HomeControl extends Controller
         $sessionOtp = session('otp');
         $email = session('email');
 
-        $owner = LandOwner::where('email', $email)->first();
+        $owner = Buyer::where('email', $email)->first();
 
         if ($owner && Hash::check($request->otp, $owner->otp)) {
             Auth::guard('seller')->login($owner);
@@ -418,12 +420,22 @@ class HomeControl extends Controller
     }
     public function handleGoogleCallback(Request $request)
     {
-        $googleUser = FacadesSocialite::driver('google')->user();
-        // dd($googleUser->email );
-        $owner = LandOwner::where('email', $googleUser->email)->first();
+        $client = new \GuzzleHttp\Client(['verify' => false]);
+        $googleUser = FacadesSocialite::with('google')->setHttpClient($client)->user();
+
+        // dd($googleUser);
+        $owner = Buyer::where('email', $googleUser->email)->first();
         if ($owner) {
             Auth::guard('seller')->login($owner);
-            return redirect()->route('seller.dashboard')->with('success', 'OTP verified successfully!');
+            // $user = Auth::guard('seller')->user();
+
+            $cart = session('cart', []);
+
+            if (!empty($cart)) {
+                return redirect()->route('cart.view')->with('success', 'Login successfully!');
+            } else {
+                return redirect()->route('home')->with('success', 'Login successfully!');
+            }
         } else {
             return redirect()->route('post.property')->withErrors(['error' => 'Your Account Information is not with us. Please do register!']);
         }
@@ -435,7 +447,7 @@ class HomeControl extends Controller
     public function resendOtp(Request $request)
     {
 
-        $owner = LandOwner::where('email', session('email'))->first();
+        $owner = Buyer::where('email', session('email'))->first();
 
         if ($owner) {
             $otp = Str::random(6);
@@ -461,7 +473,7 @@ class HomeControl extends Controller
         Auth::guard('seller')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('seller.login');
+        return redirect()->route('user.login');
     }
     public function adminlogout(Request $request)
     {
@@ -477,9 +489,22 @@ class HomeControl extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function Orders()
     {
-        //
+        $buyer = Auth::guard('seller')->user();
+
+        if (!$buyer) {
+            return redirect()->route('user.login')->with('error', 'Please login to view your orders.');
+        }
+
+        // Get orders with related product and address information
+        $orders = Order::with(['product', 'address'])
+            ->where('buyer_id', $buyer->id)
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->groupBy('order_id'); // Group by order_id to show combined orders
+
+        return view('view.orders', compact('orders', 'buyer'));
     }
     public function parseOrderId($order_id)
     {

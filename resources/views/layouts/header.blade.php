@@ -103,13 +103,35 @@
                                 </form>
                                 <ul class="nav-icon-list text-nowrap">
                                     <li class="d-none d-lg-flex">
-                                        <a class="nav-icon-item-2 text-white link" href="javascript:void(0)">
+                                @if(Auth::guard('seller')->check())
+                                    <div class="dropdown">
+                                        <a class="nav-icon-item-2 text-white link dropdown-toggle" href="javascript:void(0)" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                             <i class="icon icon-user"></i>
                                             <div class="nav-icon-item_sub">
-                                                <span class="text-sub text-small-2">Hello, sign in</span>
-                                                <span class="h6">Prakash</span>
+                                                <span class="text-sub text-small-2">Hello, {{ Auth::guard('seller')->user()->name }}</span>
+                                                <span class="h6">My Account</span>
                                             </div>
                                         </a>
+                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                            <li><a class="dropdown-item" href="{{ route('user.orders') }}">Orders</a></li>
+                                            <li><a class="dropdown-item" href="{{ route('user.profile') }}">Profile</a></li>
+                                            <li>
+                                                <form method="POST" action="{{ route('user.logout') }}">
+                                                    @csrf
+                                                    <button type="submit" class="dropdown-item">Logout</button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                @else 
+                                    <a class="nav-icon-item-2 text-white link" href="{{ route('user.login') }}">
+                                        <i class="icon icon-user"></i>
+                                        <div class="nav-icon-item_sub">
+                                            <span class="text-sub text-small-2">Hello</span>
+                                            <span class="h6">Login</span>
+                                        </div>
+                                    </a>
+                                @endif
                                     </li>
                                     <li>
                                         <a class="nav-icon-item-2 text-white link" href="{{route('cart.view')}}">
@@ -232,7 +254,7 @@
                                     <i class="icon icon-heart"></i>
                                     <span class="count">24</span>
                                 </a>
-                            </li>
+                            </li>php
                             <li>
                                 <a class="nav-icon-item-2 text-white link" href="#shoppingCart" data-bs-toggle="offcanvas">
                                     <div class="position-relative d-flex">

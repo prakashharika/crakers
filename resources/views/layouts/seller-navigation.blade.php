@@ -87,7 +87,7 @@ $user = Auth::guard('seller')->user();
                 <p class="fs-sm text-secondary">Seller</p>
                 <nav class="nav">
                   {{-- <a href="{{ route('profile.edit') }}"><i class="ri-user-settings-line"></i> Account Settings</a> --}}
-                  <form id="logout-form" action="{{ route('seller.logout') }}" method="POST" style="display: none;">
+                  <form id="logout-form" action="{{ route('user.logout') }}" method="POST" style="display: none;">
                     @csrf
                     
                   </form>

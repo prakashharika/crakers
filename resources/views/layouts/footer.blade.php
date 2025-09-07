@@ -382,7 +382,7 @@
                         <div class="tf-mini-cart-bottom-wrap">
                             <div class="tf-mini-cart-view-checkout">
                                 <a href="{{ route('cart.view') }}" class="tf-btn btn-white animate-btn animate-dark line">View cart</a>
-                                <a href="javascript:void(0)" class="tf-btn animate-btn d-inline-flex bg-dark-2 w-100 justify-content-center"><span>Check
+                                <a href="{{route('checkout')}}" class="tf-btn animate-btn d-inline-flex bg-dark-2 w-100 justify-content-center"><span>Check
                                         out</span></a>
                             </div>
                             <div class="free-shipping">

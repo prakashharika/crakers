@@ -26,7 +26,7 @@
                       <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"><i class="ri-suitcase-2-fill"></i> <span>Dashboard</span></a>
                 </li>
                 <li class="nav-item">
-                      <a href="{{ route('sales.list') }}" class="nav-link {{ request()->routeIs('sales.list') ? 'active' : '' }}"><i class="ri-mail-unread-fill"></i> <span>Orders </span></a>
+                      <a href="{{ route('oders.list') }}" class="nav-link {{ request()->routeIs('sales.list') ? 'active' : '' }}"><i class="ri-mail-unread-fill"></i> <span>Orders </span></a>
                 </li>
                 <li class="nav-item">
               <a href="{{ route('property.view') }}" class="nav-link {{ request()->routeIs('property.view') ? 'active' : '' }}"><i class="ri-home-4-fill"></i> <span>Categories</span></a>

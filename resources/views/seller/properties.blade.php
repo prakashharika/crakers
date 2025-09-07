@@ -178,7 +178,7 @@
         </div>
         <div class="main-footer mt-5">
             <span>&copy; 2023. CPR Pyropark . All Rights Reserved.</span>
-            <span>Developed by :) <a href="https://jayamwebsolutions.com/" target="_blank">Jayam Web Soluions</a></span>
+            <span>Developed by :) <a href="https://codewapp.com/" target="_blank">Jayam Web Soluions</a></span>
         </div><!-- main-footer -->
     </div>
     <script src="{{ asset('assets/lib/jquery/jquery.min.js') }}"></script>

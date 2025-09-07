@@ -1,126 +1,20 @@
 @extends('layouts.main')
 
 @section('content')
-
 <div class="login-container min-vh-100 d-flex justify-content-center align-items-center py-4">
-    
-    {{-- Glassmorphic Card --}}
     <div class="card shadow-lg p-4 p-md-5 border-0 rounded-4 animate__animated animate__fadeInDown login-card">
-            <style>
-
-        .form-container {
-            padding: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-label {
-            font-size: 1rem;
-            color: #fff;
-            font-weight: 600;
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: #007bff;
-            box-shadow: 0 0 8px rgba(0, 123, 255, 0.25);
-        }
-
-        .submit-button {
-            background-color: #007bff;
-            color: #ffffff;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            margin-top: 10px;
-        }
-
-        .submit-button:hover {
-            background-color: #0056b3;
-            transform: translateY(-2px);
-        }
-
-        .google-button {
-            background-color: #fff;
-            color: #000;
-            border: none;
-            border-radius: 8px;
-            padding: 12px 20px;
-            font-size: 1rem;
-            border: 1px solid #DDDDDD;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width:auto;
-            align-content: center;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-        .row.d-flex.justify-content-center.text-center {
-    display: flex;
-    justify-content: center;
-}
-        .google-button img {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
-        }
-
-        .google-button:hover {
-            background-color: #fff;
-            transform: translateY(-2px);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .main-sell {
-                padding: 30px;
-            }
-
-            .submit-button,
-            .google-button {
-                width: 100%;
-                padding: 14px;
-            }
-        }
-    </style>
-
-    <main class="container-fluid">
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                <script>
-                    Toastify({
-                        text: "{{ $error }}",
-                        duration: 3000,
-                        close: true,
-                        gravity: "top",
-                        position: "right",
-                        backgroundColor: "#d9534f",
-                        stopOnFocus: true,
-                    }).showToast();
-                </script>
-            @endforeach
-        @endif
-                @if(session('success'))
+        <div class="text-center mb-4">
+            <div class="logo-container mb-3 animate__animated animate__bounceIn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-person-plus text-white" viewBox="0 0 16 16">
+                    <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                    <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
+                </svg>
+            </div>
+            <h2 class="mb-2 fw-bold text-white fs-3 fs-md-2">Create Account</h2>
+            <p class="text-light mb-0 opacity-75">Sign up to get started</p>
+        </div>
+        
+        @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ session('success') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -133,29 +27,102 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
-        <div class="main-sell">
-            <form class="property-form" action="{{ route('user.log') }}" method="post" novalidate>
-                @csrf
-                <div class="form-container">
-                    <div class="form-group">
-                        <label for="email" class="form-label">User Login </label>
-                        <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" value="" required>
-                    </div>
-                    <div class="row d-flex justify-content-center text-center">
-                        <button type="submit" class="btn submit-button">Submit</button>
-                    </div>
-                </div>
-            </form>
-            <div class="row d-flex justify-content-center text-center">
-                <a href="{{ url('login/google') }}" class="google-button">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google Logo">
-                    Login with Google
-                </a>
+        
+        <form method="POST" action="{{ route('user.register.store') }}" class="needs-validation" novalidate>
+            @csrf
+
+            <div class="mb-3 ">
+                <input 
+                    type="text" 
+                    class="form-control @error('name') is-invalid @enderror rounded-4 shadow-sm " 
+                    id="name" 
+                    name="name" 
+                    value="{{ old('name') }}" 
+                    required 
+                    autofocus
+                    placeholder="Your Name"
+                >
+                <label for="name" class="fw-semibold text-light">Full Name</label>
+                @error('name')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
             </div>
-        </div>
-    </main>
+
+            <div class="mb-3 ">
+                <input 
+                    type="email" 
+                    class="form-control @error('email') is-invalid @enderror rounded-4 shadow-sm " 
+                    id="email" 
+                    name="email" 
+                    value="{{ old('email') }}" 
+                    required 
+                    placeholder="name@example.com"
+                >
+                <label for="email" class="fw-semibold text-light">Email address</label>
+                @error('email')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </div>
+             <div class="mb-3 ">
+                <input 
+                    type="number" 
+                    class="form-control @error('phone') is-invalid @enderror rounded-4 shadow-sm " 
+                    id="phone" 
+                    name="phone" 
+                    value="{{ old('phone') }}" 
+                    required 
+                    placeholder="9876543210"
+                >
+                <label for="phone" class="fw-semibold text-light">Phone</label>
+                @error('phone')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+             </div>
+            <div class="mb-3 ">
+                <input 
+                    type="password" 
+                    class="form-control @error('password') is-invalid @enderror rounded-4 shadow-sm " 
+                    id="password" 
+                    name="password" 
+                    required
+                    placeholder="Password"
+                >
+                <label for="password" class="fw-semibold text-light">Password</label>
+                @error('password')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="mb-3 ">
+                <input 
+                    type="password" 
+                    class="form-control rounded-4 shadow-sm " 
+                    id="password_confirmation" 
+                    name="password_confirmation" 
+                    required
+                    placeholder="Confirm Password"
+                >
+                <label for="password_confirmation" class="fw-semibold text-light">Confirm Password</label>
+            </div>
+
+            <div class="d-grid mb-4">
+                <button type="submit" class="btn btn-glow rounded-4 fw-bold py-3">
+                    <span class="btn-text">Register</span>
+                    <span class="btn-spinner d-none">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Creating account...
+                    </span>
+                </button>
+            </div>
+
+            <div class="text-center">
+                <a href="{{ route('user.login') }}" class="link-light text-decoration-underline opacity-75">Already have an account? Login</a>
+            </div>
+        </form>
+    </div>
 </div>
-</div>
+
+
 {{-- Animate.css --}}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
@@ -220,25 +187,25 @@
     }
 
     /* Glass inputs */
-    .input-glass {
+    . {
         background: rgba(255, 255, 255, 0.2) !important;
         border: 1px solid rgba(255, 255, 255, 0.3) !important;
         color: #fff !important;
         transition: all 0.3s ease;
     }
     
-    .input-glass:focus {
+    .:focus {
         border-color: #fff !important;
         box-shadow: 0 0 15px rgba(255,255,255,0.4) !important;
         transform: translateY(-2px);
     }
     
-    .input-glass::placeholder {
+    .::placeholder {
         color: rgba(255,255,255,0.7);
     }
     
-    .form-floating>.form-control:focus~label,
-    .form-floating>.form-control:not(:placeholder-shown)~label {
+    .>.form-control:focus~label,
+    .>.form-control:not(:placeholder-shown)~label {
         color: #fff;
         opacity: 0.9;
     }
@@ -277,14 +244,14 @@
     }
 
     /* Form elements animation */
-    .form-floating, .form-check, .d-grid {
+    ., .form-check, .d-grid {
         animation: fadeInUp 0.6s ease forwards;
         opacity: 0;
         transform: translateY(20px);
     }
     
-    .form-floating:nth-child(1) { animation-delay: 0.2s; }
-    .form-floating:nth-child(2) { animation-delay: 0.3s; }
+    .:nth-child(1) { animation-delay: 0.2s; }
+    .:nth-child(2) { animation-delay: 0.3s; }
     .form-check { animation-delay: 0.4s; }
     .d-grid { animation-delay: 0.5s; }
     .text-center { animation-delay: 0.6s; }

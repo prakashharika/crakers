@@ -68,73 +68,19 @@
                 <div dir="ltr" class="swiper tf-swiper wow fadeInUp" data-preview="6" data-tablet="4" data-mobile-sm="3" data-mobile="2"
                     data-space-lg="48" data-space-md="32" data-space="12" data-pagination="2" data-pagination-sm="3" data-pagination-md="4"
                     data-pagination-lg="6">
-                  <div class="swiper-wrapper">
-                    <!-- item 1 -->
-                    <div class="swiper-slide">
-                        <a href="javascript:void(0)" class="widget-collection style-circle hover-img">
-                            <div class="collection_image img-style">
-                                <img class="lazyload" src="{{ asset('front-end/images/products/sparklers.jpg')}}" data-src="{{ asset('front-end/images/products/sparklers.jpg')}}" alt="Sparklers">
+                    <div class="swiper-wrapper">
+                        @foreach($categories as $category)
+                            <div class="swiper-slide">
+                                <a href="{{ route('product.category', ['slug' => $category->slug]) }}" class="widget-collection style-circle hover-img">
+                                    <div class="collection_image img-style">
+                                        <img class="lazyload" src="{{ asset($category->image)}}" data-src="{{ asset($category->image)}}" alt="Sparklers">
+                                    </div>
+                                    <p class="collection_name h4 link">
+                                        {{ $category->name }} <span class="count text-main-2">({{ $category->products->count() }})</span>
+                                    </p>
+                                </a>
                             </div>
-                            <p class="collection_name h4 link">
-                                Sparklers (Phuljhari) <span class="count text-main-2">(24)</span>
-                            </p>
-                        </a>
-                    </div>
-                    <!-- item 2 -->
-                    <div class="swiper-slide">
-                        <a href="javascript:void(0)" class="widget-collection style-circle hover-img">
-                            <div class="collection_image img-style">
-                                <img class="lazyload" src="{{ asset('front-end/images/products/gound.jpg')}}" data-src="{{ asset('front-end/images/products/gound.jpg')}}" alt="Ground Spinners">
-                            </div>
-                            <p class="collection_name h4 link">
-                                Ground Spinners (Chakri) <span class="count text-main-2">(30)</span>
-                            </p>
-                        </a>
-                    </div>
-                    <!-- item 3 -->
-                    <div class="swiper-slide">
-                        <a href="javascript:void(0)" class="widget-collection style-circle hover-img">
-                            <div class="collection_image img-style">
-                                <img class="lazyload" src="{{ asset('front-end/images/products/flower.jpg')}}" data-src="{{ asset('front-end/images/products/flower.jpg')}}" alt="Flower Pots">
-                            </div>
-                            <p class="collection_name h4 link">
-                                Flower Pots (Anar) <span class="count text-main-2">(18)</span>
-                            </p>
-                        </a>
-                    </div>
-                    <!-- item 4 -->
-                    <div class="swiper-slide">
-                        <a href="javascript:void(0)" class="widget-collection style-circle hover-img">
-                            <div class="collection_image img-style">
-                                <img class="lazyload" src="{{ asset('front-end/images/products/rokets.jpg')}}" data-src="{{ asset('front-end/images/products/rokets.jpg')}}" alt="Rockets">
-                            </div>
-                            <p class="collection_name h4 link">
-                                Rockets <span class="count text-main-2">(47)</span>
-                            </p>
-                        </a>
-                    </div>
-                    <!-- item 5 -->
-                    <div class="swiper-slide">
-                        <a href="javascript:void(0)" class="widget-collection style-circle hover-img">
-                            <div class="collection_image img-style">
-                                <img class="lazyload" src="{{ asset('front-end/images/products/bomb.jpg')}}" data-src="{{ asset('front-end/images/products/bomb.jpg')}}" alt="Bombs">
-                            </div>
-                            <p class="collection_name h4 link">
-                                Bombs / Sound Crackers <span class="count text-main-2">(90)</span>
-                            </p>
-                        </a>
-                    </div>
-                    <!-- item 6 -->
-                    <div class="swiper-slide">
-                        <a href="javascript:void(0)" class="widget-collection style-circle hover-img">
-                            <div class="collection_image img-style">
-                                <img class="lazyload" src="{{ asset('front-end/images/products/sky.jpg')}}" data-src="{{ asset('front-end/images/products/sky.jpg')}}" alt="Sky Shots">
-                            </div>
-                            <p class="collection_name h4 link">
-                                Sky Shots / Aerials <span class="count text-main-2">(86)</span>
-                            </p>
-                        </a>
-                    </div>
+                           @endforeach
                 </div>
 
                     <div class="sw-dot-default tf-sw-pagination"></div>
@@ -755,9 +701,15 @@
         <section>
             <div class="container">
                 <div class="banner-V02 hover-img wow fadeInUp">
-                    <div class="banner_img img-style">
-                        <img src="{{asset('images/'.$banner->image??'')}}" data-src="{{asset('images/'.$banner->image??'')}}" alt="Banner" class="lazyload">
-                    </div>
+                   <div class="banner_img img-style">
+    <img 
+        src="{{ asset('images/' . ($banner->image ?? 'default.jpg')) }}" 
+        data-src="{{ asset('images/' . ($banner->image ?? 'default.jpg')) }}" 
+        alt="Banner" 
+        class="lazyload"
+    >
+</div>
+
                     <div class="banner_content">
                         <div class="box-text">
                             <h2 class="title type-semibold">

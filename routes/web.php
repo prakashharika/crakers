@@ -6,13 +6,14 @@ use App\Http\Controllers\HomeControl;
 use App\Http\Controllers\HomePageControl;
 use App\Http\Controllers\LandOwnerControl;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PackagesControl;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PropertyControl;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ServicesControl;
-use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\UserController;
 use App\Models\Advertisement;
 use App\Models\BlogPost;
 use App\Models\OrderPackage;
@@ -63,17 +64,18 @@ Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add')
 Route::get('/cart/content', [CartController::class, 'getCartContent'])->name('cart.content');
 Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
 Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update');
+
+
 Route::get('/checkout', function () {
-    // date-order-id
-    //order - id , order_id, product id, quantity, price, payment_status, user_id, address id
-    //address - id, user id, name, phone, address, pincode
-    dd(session()->get('cart', []));
+    $blogs = BlogPost::latest()->take(3)->get();
+    $categories = Property::where('status', 1)->orderBy('created_at', 'asc')->take(9)->get();
+    $categories2 = Property::where('status', 1)->orderBy('created_at', 'desc')->take(9)->get();
+    $slider = Slider::latest()->get();
+    // dd(session()->get('cart', []));
 
+
+    return view('welcome', compact('blogs', 'categories', 'slider', 'categories2'));
 })->name('checkout');
-
-Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout');
-Route::post('/checkout', [CheckoutController::class, 'placeOrder'])->name('checkout.place');
-
 
 Route::get('/blog/{slug}', [HomeControl::class, 'blogShow'])->name('blog-user.show');
 Route::get('/blogs', [HomeControl::class, 'blogList'])->name('blog.list');
@@ -87,7 +89,7 @@ Route::get('/choose-package', [HomeControl::class, 'choosePackage'])->name('choo
 Route::get('/package-selecting/{id}', [HomeControl::class, 'updatelandownerPackage'])->name('package.selecting');
 Route::get('/order-package/{id}', [HomeControl::class, 'orderResponse'])->name('order.package');
 Route::get('login/google', [HomeControl::class, 'redirectToGoogle']);
-Route::get('/callback', [HomeControl::class, 'handleGoogleCallback']);
+Route::get('/user/auth/google/callback', [HomeControl::class, 'handleGoogleCallback']);
 
 Route::get('/search', [HomeControl::class, 'search'])->name('search');
 Route::post('/filter-properties', [HomeControl::class, 'filterProperties'])->name('filter-properties');
@@ -115,6 +117,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/property-list/{id}', [ProductController::class, 'index'])->name('property-list');
         Route::get('/property-add/{id}', [PropertyControl::class, 'add'])->name('property-list.add');
         Route::get('/sales-list', [PropertyControl::class, 'salesList'])->name('sales.list');
+        Route::get('/orders-list', [PropertyControl::class, 'ordersList'])->name('oders.list');
         Route::post('/property-future-status/', [PropertyControl::class, 'propertyFutureStatus'])->name('admin.future.status.update');
         Route::post('/property-store/', [PropertyControl::class, 'propertyStore'])->name('properties.store');
         Route::post('/property-status/', [PropertyControl::class, 'propertyStatus'])->name('property.status.update');
@@ -162,38 +165,35 @@ Route::prefix('admin')->group(function () {
     });
 });
 
-Route::prefix('seller')->group(function () {
-    Route::get('/', [HomeControl::class, 'sellerLogin'])->name('seller.login');
-    Route::post('/logout', [HomeControl::class, 'logout'])->name('seller.logout');
-    Route::post('/login', [HomeControl::class, 'sellerLog'])->name('seller.log');
+Route::prefix('user')->group(function () {
+    Route::get('/', [HomeControl::class, 'sellerLogin'])->name('user.login');
+    Route::post('/logout', [HomeControl::class, 'logout'])->name('user.logout');
+    Route::post('/login', [HomeControl::class, 'sellerLog'])->name('user.log');
     Route::get('/otp/verify', [HomeControl::class, 'showVerifyForm'])->name('otp.verify');
     Route::get('/otp/resend', [HomeControl::class, 'resendOtp'])->name('otp.resend');
     Route::post('/otp/verify', [HomeControl::class, 'verifyOtp']);
 
     Route::middleware(['sellerAuth'])->group(function () {
-        Route::get('/dashboard', function () {
-            $user = Auth::guard('seller')->user();
-            $landownerId = $user->id;
-            $currentpackage = OrderPackage::where('land_owner_id', $landownerId)
-                ->where('payment_status', 'success')
-                ->where('status', 'active')
-                ->first();
-            return view('seller-dashboard', compact('currentpackage'));
-        })->name('seller.dashboard');
-        Route::get('/my-packages', [PropertyControl::class, 'myPackages'])->name('my.packages');
-        Route::get('/properties', [PropertyControl::class, 'sellerview'])->name('property-cate-owner.view');
-        Route::get('/seller-view', [PropertyControl::class, 'sellerindex'])->name('property.seller.index');
+        Route::get('/orders', [HomeControl::class, 'Orders'])->name('user.orders');
+        Route::get('/my-profile', [PropertyControl::class, 'userProfile'])->name('user.profile');
+        Route::post('/update', [PropertyControl::class, 'userUpdate'])->name('update.user.profile');
+
+        Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout');
+        Route::post('/checkout', [CheckoutController::class, 'placeOrder'])->name('checkout.place');
+
+
+        Route::get('/seller-view', [PropertyControl::class, 'sellerindex'])->name('property.user.index');
         Route::get('/property-seller-list/{id}', [PropertyControl::class, 'sellerlist'])->name('property-seller-list');
-        Route::get('/property-add/{id}', [PropertyControl::class, 'sellerpropertyadd'])->name('property.seller.add');
-        Route::post('/seller-future-status/', [PropertyControl::class, 'propertySellerFutureUpdate'])->name('seller.future.status.update');
-        Route::post('/property-seller-store/', [PropertyControl::class, 'propertySellerStore'])->name('properties.seller.store');
-        Route::get('/property-seller-view/{id}', [PropertyControl::class, 'propertySellerView'])->name('properties-list.seller.view');
-        Route::get('/property-seller-edit/{id}', [PropertyControl::class, 'propertySellerEdit'])->name('properties-list.seller.edit');
-        Route::put('/property-seller-update/{id}', [PropertyControl::class, 'propertySellerUpdate'])->name('properties-list.seller.update');
-        Route::get('/property-seller-delete/{id}', [PropertyControl::class, 'propertySellerDelete'])->name('properties-list.seller.delete');
-        Route::get('/seller-sales-list', [PropertyControl::class, 'sellerSalesList'])->name('seller.sales.list');
+        Route::get('/property-add/{id}', [PropertyControl::class, 'sellerpropertyadd'])->name('property.user.add');
+        Route::post('/seller-future-status/', [PropertyControl::class, 'propertySellerFutureUpdate'])->name('user.future.status.update');
+        Route::post('/property-seller-store/', [PropertyControl::class, 'propertySellerStore'])->name('properties.user.store');
+        Route::get('/property-seller-view/{id}', [PropertyControl::class, 'propertySellerView'])->name('properties-list.user.view');
+        Route::get('/property-seller-edit/{id}', [PropertyControl::class, 'propertySellerEdit'])->name('properties-list.user.edit');
+        Route::put('/property-seller-update/{id}', [PropertyControl::class, 'propertySellerUpdate'])->name('properties-list.user.update');
+        Route::get('/property-seller-delete/{id}', [PropertyControl::class, 'propertySellerDelete'])->name('properties-list.user.delete');
+        Route::get('/seller-sales-list', [PropertyControl::class, 'sellerSalesList'])->name('user.sales.list');
         Route::get('/advertisement', [PropertyControl::class, 'sellerAdvertisement'])->name('my.advertisement');
-        Route::post('/advertisement', [PropertyControl::class, 'sellerAdvertisementStore'])->name('seller.advertisements.store');
+        Route::post('/advertisement', [PropertyControl::class, 'sellerAdvertisementStore'])->name('user.advertisements.store');
     });
 });
 require __DIR__ . '/auth.php';

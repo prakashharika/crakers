@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Advertisement;
+use App\Models\Buyer;
 use App\Models\LandOwner;
+use App\Models\Order;
 use App\Models\OrderPackage;
 use App\Models\PropertiesList;
 use App\Models\Property;
@@ -29,7 +31,7 @@ class PropertyControl extends Controller
 
     public function index()
     {
-        
+
         $properties = Property::orderBy('sort_order')->get();
         return response()->json($properties);
     }
@@ -38,103 +40,109 @@ class PropertyControl extends Controller
         $properties = Property::where('status', 1)->orderBy('sort_order')->get();
         return response()->json($properties);
     }
-    public function salesList()
+    public function userProfile()
     {
-        $sales = Sale::leftJoin('properties_lists', 'properties_lists.id', '=', 'sales.pro_id')
-        ->leftJoin('land_owners', 'land_owners.id', '=', 'properties_lists.land_owner_id') 
-        ->orderByDesc('sales.created_at')
-        ->select('sales.*', 'properties_lists.title', 'properties_lists.land_owner_id', 'land_owners.name as land_owner_name', 'land_owners.city as land_owner_address') 
-        ->get();
-
-        return view('admin.sales', compact('sales'));
+        $user = Buyer::where('email', Auth::guard('seller')->user()->email)->first();
+        return view('view.profile', compact('user'));
     }
-    public function sellerSalesList()
+    public function userUpdate(Request $request)
     {
         $user = Auth::guard('seller')->user();
-        $sales = Sale::leftJoin('properties_lists', 'properties_lists.id', '=', 'sales.pro_id')
-        ->leftJoin('land_owners', 'land_owners.id', '=', 'properties_lists.land_owner_id') 
-        ->where('land_owners.id', $user->id) 
-        ->orderByDesc('sales.created_at')
-        ->select(
-            'sales.*', 
-            'properties_lists.title', 
-            'properties_lists.land_owner_id', 
-            'land_owners.name as land_owner_name', 
-            'land_owners.city as land_owner_address'
-        )
-        ->get();
-        return view('seller.sales', compact('sales'));
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'city' => 'nullable|string|max:100',
+            'address' => 'nullable|string|max:255',
+        ]);
+
+        // Alternative method using DB query
+        \DB::table('buyers')
+            ->where('id', $user->id)
+            ->update($validated);
+
+        return redirect()->route('user.profile')->with('success', 'Profile updated successfully!');
     }
     public function list($id)
     {
-       $products = Product::latest()->paginate(10);
+        $products = Product::latest()->paginate(10);
         return view('admin.properties', compact('products'));
+    }
+    public function ordersList()
+    {
+        // Get all orders with relationships
+        $orders = Order::with(['product', 'buyer', 'address'])
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->groupBy('order_id');
+
+        return view('admin.orders', compact('orders'));
     }
     public function Advertisement()
     {
 
         $advertisementsWithSeller = Advertisement::with(['property', 'seller'])
-        ->whereNotNull('seller_id')
-        ->get();
+            ->whereNotNull('seller_id')
+            ->get();
 
-    $advertisementsWithoutSeller = Advertisement::with('property')
-        ->whereNull('seller_id')
-        ->get();
+        $advertisementsWithoutSeller = Advertisement::with('property')
+            ->whereNull('seller_id')
+            ->get();
         $properties = PropertiesList::whereNull('land_owner_id')->get();
         return view('admin.advertisement', compact('properties', 'advertisementsWithSeller', 'advertisementsWithoutSeller'));
-}
-public function AdvertisementStore(Request $request)
-{
-    $request->validate([
-        'property_id' => 'required|exists:properties_lists,id',
-        'ad_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-    ]);
-
-    $validated = [];
-    $path = public_path('advertisement');
-    if (!file_exists($path)) {
-        mkdir($path, 0777, true);
     }
-
-    if ($request->hasFile('ad_image')) {
-        $image = $request->file('ad_image');
-        $imageName = time() . '_' . $image->getClientOriginalName();
-        $image->move($path, $imageName);
-        $validated['ad_image'] = 'advertisement/' . $imageName;
-    }
-
-    if ($request->id) {
-        $advertisement = Advertisement::findOrFail($request->id);
-        $advertisement->property_id = $request->property_id;
-        if (isset($validated['ad_image'])) {
-            $advertisement->ad_image = $validated['ad_image']; 
-        }
-        $advertisement->save();
-
-        return redirect()->route('admin.advertisement')->with('success', 'Advertisement updated successfully.');
-    } else {
-        Advertisement::create([
-            'property_id' => $request->property_id,
-            'ad_image' => isset($validated['ad_image']) ? $validated['ad_image'] : null,
+    public function AdvertisementStore(Request $request)
+    {
+        $request->validate([
+            'property_id' => 'required|exists:properties_lists,id',
+            'ad_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        return redirect()->route('admin.advertisement')->with('success', 'Advertisement created successfully.');
-    }
-}
-
-
-public function advertisementDestroy(Advertisement $advertisement)
-{
-    try {
-        if (file_exists(public_path($advertisement->ad_image))) {
-            unlink(public_path($advertisement->ad_image));
+        $validated = [];
+        $path = public_path('advertisement');
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
         }
-        $advertisement->delete();
-        return response()->json(['success' => true, 'message' => 'Advertisement deleted successfully.']);
-    } catch (\Exception $e) {
-        return response()->json(['success' => false, 'message' => 'Error occurred while deleting the advertisement.']);
+
+        if ($request->hasFile('ad_image')) {
+            $image = $request->file('ad_image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->move($path, $imageName);
+            $validated['ad_image'] = 'advertisement/' . $imageName;
+        }
+
+        if ($request->id) {
+            $advertisement = Advertisement::findOrFail($request->id);
+            $advertisement->property_id = $request->property_id;
+            if (isset($validated['ad_image'])) {
+                $advertisement->ad_image = $validated['ad_image'];
+            }
+            $advertisement->save();
+
+            return redirect()->route('admin.advertisement')->with('success', 'Advertisement updated successfully.');
+        } else {
+            Advertisement::create([
+                'property_id' => $request->property_id,
+                'ad_image' => isset($validated['ad_image']) ? $validated['ad_image'] : null,
+            ]);
+
+            return redirect()->route('admin.advertisement')->with('success', 'Advertisement created successfully.');
+        }
     }
-}
+
+
+    public function advertisementDestroy(Advertisement $advertisement)
+    {
+        try {
+            if (file_exists(public_path($advertisement->ad_image))) {
+                unlink(public_path($advertisement->ad_image));
+            }
+            $advertisement->delete();
+            return response()->json(['success' => true, 'message' => 'Advertisement deleted successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error occurred while deleting the advertisement.']);
+        }
+    }
 
     public function sellerAdvertisement()
     {
@@ -149,33 +157,33 @@ public function advertisementDestroy(Advertisement $advertisement)
     {
         $request->validate([
             'property_id' => 'required|exists:properties_lists,id',
-            'ad_image' => 'required|image|max:2048', 
+            'ad_image' => 'required|image|max:2048',
         ]);
-    
+
         $sellerId = Auth::guard('seller')->id();
-    
+
         $path = public_path('advertisement');
         if (!file_exists($path)) {
             mkdir($path, 0777, true);
         }
-    
+
         $validated = [];
-    
+
         if ($request->hasFile('ad_image')) {
             $image = $request->file('ad_image');
             $imageName = time() . '_' . $image->getClientOriginalName();
             $image->move($path, $imageName);
             $validated['image'] = 'advertisement/' . $imageName;
         }
-    
+
         $advertisement = Advertisement::where('seller_id', $sellerId)->first();
-    
+
         if ($advertisement) {
             $advertisement->update([
                 'property_id' => $request->property_id,
                 'ad_image' => $validated['image'] ?? $advertisement->ad_image, // Keep the old image if no new image
             ]);
-    
+
             $message = 'Advertisement updated successfully.';
         } else {
             Advertisement::create([
@@ -183,13 +191,13 @@ public function advertisementDestroy(Advertisement $advertisement)
                 'ad_image' => $validated['image'],
                 'seller_id' => $sellerId,
             ]);
-    
+
             $message = 'Advertisement added successfully.';
         }
-    
+
         return redirect()->back()->with('success', $message);
     }
-    
+
     public function sellerlist($id)
     {
         $user = Auth::guard('seller')->user();
@@ -209,9 +217,9 @@ public function advertisementDestroy(Advertisement $advertisement)
             return redirect()->back();
         }
         $package = OrderPackage::where('land_owner_id', $user->id)
-        ->where('payment_status', 'success')
-        ->where('status', 'active')
-        ->first();
+            ->where('payment_status', 'success')
+            ->where('status', 'active')
+            ->first();
 
         if (!isset($package) || $package == null) {
             return redirect()->back()->with('error', 'You do not have an active plan to access this feature. Please upgrade your package.');
@@ -226,11 +234,11 @@ public function advertisementDestroy(Advertisement $advertisement)
     {
         $user = Auth::guard('seller')->user();
         $packages = OrderPackage::where('land_owner_id', $user->id)
-        ->orderByDesc('created_at')
-        // ->where('payment_status', 'success')
-        // ->where('status', 'active')
-        ->get();
-        
+            ->orderByDesc('created_at')
+            // ->where('payment_status', 'success')
+            // ->where('status', 'active')
+            ->get();
+
         return view('seller.my-pakages', compact('packages'));
     }
     public function sellerpropertyadd($id)
@@ -238,9 +246,9 @@ public function advertisementDestroy(Advertisement $advertisement)
         $property = Property::where('id', $id)->first();
         $user = Auth::guard('seller')->user();
         $package = OrderPackage::where('land_owner_id', $user->id)
-        ->where('payment_status', 'success')
-        ->where('status', 'active')
-        ->first();
+            ->where('payment_status', 'success')
+            ->where('status', 'active')
+            ->first();
 
         if (empty($property)) {
             return redirect()->back();
@@ -248,13 +256,13 @@ public function advertisementDestroy(Advertisement $advertisement)
         if (!isset($package) || $package == null) {
             return redirect()->back()->with('error', 'You do not have an active plan to access this feature. Please upgrade your package.');
         }
-        
+
         if ($package->LandOwner->PropertiesList->count() >= $package->no_property) {
             return redirect()->back()->with('error', 'Your current plan has reached the maximum property upload limit. Please upgrade your package for additional uploads.');
         }
-        
-        
-        return view('seller.properties-add', compact('property','package'));
+
+
+        return view('seller.properties-add', compact('property', 'package'));
     }
     public function add($id)
     {
@@ -311,8 +319,8 @@ public function advertisementDestroy(Advertisement $advertisement)
             } elseif ($request->input('video_option' . $i) == 'link' && $request->input('video_link' . $i)) {
                 $videos[] = $request->input('video_link' . $i);
             }
-          }
-        
+        }
+
         $property = new PropertiesList();
         $property->property_id = $request->propertyId;
         $property->title = $request->title;
@@ -358,9 +366,9 @@ public function advertisementDestroy(Advertisement $advertisement)
         $property = PropertiesList::findOrFail($id);
         $user = Auth::guard('seller')->user();
         $package = OrderPackage::where('land_owner_id', $user->id)
-        ->where('payment_status', 'success')
-        ->where('status', 'active')
-        ->first();
+            ->where('payment_status', 'success')
+            ->where('status', 'active')
+            ->first();
 
         if (empty($property)) {
             return redirect()->back();
@@ -368,7 +376,7 @@ public function advertisementDestroy(Advertisement $advertisement)
         if (!isset($package) || $package == null) {
             return redirect()->back()->with('error', 'You do not have an active plan to access this feature. Please upgrade your package.');
         }
-        return view('seller.properties-edit', compact('property','package'));
+        return view('seller.properties-edit', compact('property', 'package'));
     }
 
     public function propertyView($id)
@@ -410,9 +418,9 @@ public function advertisementDestroy(Advertisement $advertisement)
         $property = Property::where('id', $id)->first();
         $user = Auth::guard('seller')->user();
         $package = OrderPackage::where('land_owner_id', $user->id)
-        ->where('payment_status', 'success')
-        ->where('status', 'active')
-        ->first();
+            ->where('payment_status', 'success')
+            ->where('status', 'active')
+            ->first();
 
         if (empty($property)) {
             return redirect()->back();
@@ -420,7 +428,7 @@ public function advertisementDestroy(Advertisement $advertisement)
         if (!isset($package) || $package == null) {
             return redirect()->back()->with('error', 'You do not have an active plan to access this feature. Please upgrade your package.');
         }
-        
+
         if ($package->LandOwner->PropertiesList->count() >= $package->no_property) {
             return redirect()->back()->with('error', 'Your current plan has reached the maximum property upload limit. Please upgrade your package for additional uploads.');
         }
@@ -437,17 +445,17 @@ public function advertisementDestroy(Advertisement $advertisement)
                 $images[] = $imageName;
             }
         }
-        if(isset($package->upto_videos) && $package->upto_videos != 0 && $package->upto_videos != null){
-        for ($i = 1; $i <= $package->upto_videos; $i++) {
-            if ($request->input('video_option' . $i) == 'upload' && $request->hasFile('video_file' . $i)) {
-                $video = $request->file('video_file' . $i);
-                $videoName = time() . '_video_' . $i . '.' . $video->getClientOriginalExtension();
-                $video->move(public_path('uploads/properties/videos'), $videoName);
-                $videos[] = $videoName;
-            } elseif ($request->input('video_option' . $i) == 'link' && $request->input('video_link' . $i)) {
-                $videos[] = $request->input('video_link' . $i);
+        if (isset($package->upto_videos) && $package->upto_videos != 0 && $package->upto_videos != null) {
+            for ($i = 1; $i <= $package->upto_videos; $i++) {
+                if ($request->input('video_option' . $i) == 'upload' && $request->hasFile('video_file' . $i)) {
+                    $video = $request->file('video_file' . $i);
+                    $videoName = time() . '_video_' . $i . '.' . $video->getClientOriginalExtension();
+                    $video->move(public_path('uploads/properties/videos'), $videoName);
+                    $videos[] = $videoName;
+                } elseif ($request->input('video_option' . $i) == 'link' && $request->input('video_link' . $i)) {
+                    $videos[] = $request->input('video_link' . $i);
+                }
             }
-         }
         }
         $property->property_id = $request->propertyId;
         $property->title = $request->title;
@@ -491,21 +499,21 @@ public function advertisementDestroy(Advertisement $advertisement)
         ]);
 
         $property = PropertiesList::findOrFail($validated['id']);
-   
+
         if ($validated['status'] == 0) {
             $property->future_property = 0;
             $property->save();
-    
+
             return response()->json([
                 'success' => true,
                 'message' => 'Property Removed Future Property List successfully.',
                 'property' => $property,
             ]);
         }
-    
+
         $property->future_property = 1;
         $property->save();
-    
+
         return response()->json([
             'success' => true,
             'message' => 'Property Added Future Property List successfully.',
@@ -519,12 +527,12 @@ public function advertisementDestroy(Advertisement $advertisement)
             'id' => 'required|integer|exists:properties_lists,id',
             'status' => 'required|integer|in:0,1',
         ]);
-    
+
         $user = Auth::guard('seller')->user();
         $package = OrderPackage::where('land_owner_id', $user->id)
-        ->where('payment_status', 'success')
-        ->where('status', 'active')
-        ->first();
+            ->where('payment_status', 'success')
+            ->where('status', 'active')
+            ->first();
         $property = PropertiesList::findOrFail($validated['id']);
         if (!$package) {
             return response()->json([
@@ -532,7 +540,7 @@ public function advertisementDestroy(Advertisement $advertisement)
                 'message' => 'You do not have an active plan to access this feature. Please upgrade your package.',
             ], 403);
         }
-    
+
         $propertyCount = $package->LandOwner->PropertiesList->count();
         if ($propertyCount >= $package->no_property) {
             return response()->json([
@@ -543,15 +551,15 @@ public function advertisementDestroy(Advertisement $advertisement)
         if ($validated['status'] == 0) {
             $property->future_property = 0;
             $property->save();
-    
+
             return response()->json([
                 'success' => true,
                 'message' => 'Property Removed Future Property List successfully.',
                 'property' => $property,
             ]);
         }
-    
-    
+
+
         $futureListingLimit = $package->future_listing ?? 0;
         $currentFutureListingCount = PropertiesList::where('land_owner_id', $user->id)
             ->where('future_property', 1)
@@ -563,17 +571,17 @@ public function advertisementDestroy(Advertisement $advertisement)
                 'message' => 'You have reached the maximum limit for future property listings under your current plan.',
             ], 403);
         }
-    
+
         $property->future_property = 1;
         $property->save();
-    
+
         return response()->json([
             'success' => true,
             'message' => 'Property Added Future Property List successfully.',
             'property' => $property,
         ]);
     }
-    
+
     public function propertyUpdate(Request $request, $id)
     {
         try {
@@ -607,7 +615,7 @@ public function advertisementDestroy(Advertisement $advertisement)
         }
 
         $images = json_decode($property->images, true) ?? [];
-    
+
         for ($i = 1; $i <= 7; $i++) {
             if ($request->hasFile('image' . $i)) {
                 $image = $request->file('image' . $i);
@@ -616,10 +624,10 @@ public function advertisementDestroy(Advertisement $advertisement)
                 $images[$i - 1] = $imageName;
             }
         }
-    
+
         $videos = [];
-    
-            for ($i = 1; $i <= 2; $i++) {
+
+        for ($i = 1; $i <= 2; $i++) {
             if ($request->input('video_option' . $i) == 'upload' && $request->hasFile('video_file' . $i)) {
                 $video = $request->file('video_file' . $i);
                 $videoName = time() . '_video_' . $i . '.' . $video->getClientOriginalExtension();
@@ -628,8 +636,8 @@ public function advertisementDestroy(Advertisement $advertisement)
             } elseif ($request->input('video_option' . $i) == 'link' && $request->input('video_link' . $i)) {
                 $videos[$i - 1] = $request->input('video_link' . $i); // Store the YouTube link
             }
-          }
-        
+        }
+
 
         $property->title = $request->title;
         $property->area = $request->area;
@@ -653,7 +661,7 @@ public function advertisementDestroy(Advertisement $advertisement)
 
         return redirect()->route('property-list', ['id' => $property->property_id])->with('success', 'Property deleted successfully!');
     }
-    
+
     public function propertySellerUpdate(Request $request, $id)
     {
         // dd($request->all());
@@ -678,20 +686,20 @@ public function advertisementDestroy(Advertisement $advertisement)
             $errors = $e->errors();
             return redirect()->back()->withErrors($errors)->withInput();
         }
-    
+
         $property = PropertiesList::findOrFail($id);
         $user = Auth::guard('seller')->user();
         $package = OrderPackage::where('land_owner_id', $user->id)
-        ->where('payment_status', 'success')
-        ->where('status', 'active')
-        ->first();
+            ->where('payment_status', 'success')
+            ->where('status', 'active')
+            ->first();
 
         if (empty($property)) {
             return redirect()->back();
         }
 
         $images = json_decode($property->images, true) ?? [];
-    
+
         for ($i = 1; $i <= $package->upto_images; $i++) {
             if ($request->hasFile('image' . $i)) {
                 $image = $request->file('image' . $i);
@@ -700,22 +708,22 @@ public function advertisementDestroy(Advertisement $advertisement)
                 $images[$i - 1] = $imageName;
             }
         }
-    
+
         $videos = [];
-    
-        if(isset($package->upto_videos) && $package->upto_videos != 0 && $package->upto_videos != null){
+
+        if (isset($package->upto_videos) && $package->upto_videos != 0 && $package->upto_videos != null) {
             for ($i = 1; $i <= $package->upto_videos; $i++) {
-            if ($request->input('video_option' . $i) == 'upload' && $request->hasFile('video_file' . $i)) {
-                $video = $request->file('video_file' . $i);
-                $videoName = time() . '_video_' . $i . '.' . $video->getClientOriginalExtension();
-                $video->move(public_path('uploads/properties/videos'), $videoName);
-                $videos[$i - 1] = $videoName; // Store uploaded video
-            } elseif ($request->input('video_option' . $i) == 'link' && $request->input('video_link' . $i)) {
-                $videos[$i - 1] = $request->input('video_link' . $i); // Store the YouTube link
+                if ($request->input('video_option' . $i) == 'upload' && $request->hasFile('video_file' . $i)) {
+                    $video = $request->file('video_file' . $i);
+                    $videoName = time() . '_video_' . $i . '.' . $video->getClientOriginalExtension();
+                    $video->move(public_path('uploads/properties/videos'), $videoName);
+                    $videos[$i - 1] = $videoName; // Store uploaded video
+                } elseif ($request->input('video_option' . $i) == 'link' && $request->input('video_link' . $i)) {
+                    $videos[$i - 1] = $request->input('video_link' . $i); // Store the YouTube link
+                }
             }
-          }
         }
-    
+
         $property->title = $request->title;
         $property->area = $request->area;
         $property->configuration = $request->configuration;
@@ -730,16 +738,16 @@ public function advertisementDestroy(Advertisement $advertisement)
         $property->status = '1';
         $property->about_property = $request->about_property;
         $property->features = $request->features;
-    
+
         $property->images = json_encode($images);
         $property->videos = json_encode($videos);
-    
+
         $property->save();
-    
+
         return redirect()->route('property-seller-list', ['id' => $property->property_id])
             ->with('success', 'Property updated successfully!');
     }
-    
+
     public function propertyDelete($id)
     {
         $property = PropertiesList::findOrFail($id);
@@ -762,85 +770,85 @@ public function advertisementDestroy(Advertisement $advertisement)
         return response()->json($property);
     }
 
-  public function store(Request $request)
-{
-    $validated = $request->validate([
-        'name'       => 'required|string|max:255',
-        'tamil_name' => 'nullable|string|max:255',
-        'image'      => 'nullable|image|max:2048',
-        'description'=> 'nullable|string',
-        'sort_order' => 'required|integer',
-        'status'     => 'required|integer|in:0,1',
-    ]);
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'tamil_name' => 'nullable|string|max:255',
+            'image' => 'nullable|image|max:2048',
+            'description' => 'nullable|string',
+            'sort_order' => 'required|integer',
+            'status' => 'required|integer|in:0,1',
+        ]);
 
-    // Generate the slug from the name
-    $validated['slug'] = Str::slug($validated['name']);
+        // Generate the slug from the name
+        $validated['slug'] = Str::slug($validated['name']);
 
-    // Handle image upload
-    $path = public_path('properties');
-    if (!file_exists($path)) {
-        mkdir($path, 0777, true);
+        // Handle image upload
+        $path = public_path('properties');
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->move($path, $imageName);
+            $validated['image'] = 'properties/' . $imageName;
+        }
+
+        $property = Property::create($validated);
+
+        return response()->json($property);
     }
 
-    if ($request->hasFile('image')) {
-        $image = $request->file('image');
-        $imageName = time() . '_' . $image->getClientOriginalName();
-        $image->move($path, $imageName);
-        $validated['image'] = 'properties/' . $imageName;
+
+
+    public function update(Request $request, $id)
+    {
+        $property = Property::findOrFail($id);
+        $totalPropertiesCount = Property::count();
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'tamil_name' => 'nullable|string|max:255',
+            'image' => 'nullable|image|max:2048',
+            'description' => 'nullable|string',
+            'sort_order' => 'required|integer|lte:' . $totalPropertiesCount,
+            'status' => 'required|integer|in:0,1',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $validated = $validator->validated();
+
+        // ✅ Generate slug from name
+        $validated['slug'] = Str::slug($validated['name']);
+
+        // ✅ Handle image upload
+        $path = public_path('properties');
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->move($path, $imageName);
+            $validated['image'] = 'properties/' . $imageName;
+        }
+
+        $property->update($validated);
+
+        return response()->json($property);
     }
 
-    $property = Property::create($validated);
 
-    return response()->json($property);
-}
-
-  
-
-public function update(Request $request, $id)
-{
-    $property = Property::findOrFail($id);
-    $totalPropertiesCount = Property::count();
-
-    $validator = Validator::make($request->all(), [
-        'name'        => 'required|string|max:255',
-        'tamil_name'  => 'nullable|string|max:255',
-        'image'       => 'nullable|image|max:2048',
-        'description' => 'nullable|string',
-        'sort_order'  => 'required|integer|lte:' . $totalPropertiesCount,
-        'status'      => 'required|integer|in:0,1',
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json([
-            'success' => false,
-            'errors'  => $validator->errors(),
-        ], 422);
-    }
-
-    $validated = $validator->validated();
-
-    // ✅ Generate slug from name
-    $validated['slug'] = Str::slug($validated['name']);
-
-    // ✅ Handle image upload
-    $path = public_path('properties');
-    if (!file_exists($path)) {
-        mkdir($path, 0777, true);
-    }
-
-    if ($request->hasFile('image')) {
-        $image = $request->file('image');
-        $imageName = time() . '_' . $image->getClientOriginalName();
-        $image->move($path, $imageName);
-        $validated['image'] = 'properties/' . $imageName;
-    }
-
-    $property->update($validated);
-
-    return response()->json($property);
-}
-
-    
 
     public function destroy($id)
     {

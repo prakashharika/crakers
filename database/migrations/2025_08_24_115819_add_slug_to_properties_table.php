@@ -7,20 +7,20 @@ use Illuminate\Support\Facades\Schema;
 class AddSlugToPropertiesTable extends Migration
 {
     public function up()
-{
-    Schema::table('properties', function (Blueprint $table) {
-        if (!Schema::hasColumn('properties', 'slug')) {
-            $table->string('slug')->unique()->after('tamil_name');
-        }
-    });
-}
+    {
+        Schema::table('properties', function (Blueprint $table) {
+            if (!Schema::hasColumn('properties', 'slug')) {
+                $table->string('slug')->after('tamil_name');
+            }
+        });
+    }
 
-public function down()
-{
-    Schema::table('properties', function (Blueprint $table) {
-        $table->dropColumn('slug');
-    });
-}
+    public function down()
+    {
+        Schema::table('properties', function (Blueprint $table) {
+            $table->dropColumn('slug');
+        });
+    }
 
 }
 

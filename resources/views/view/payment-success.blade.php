@@ -67,7 +67,7 @@
         <h1>Payment Successful!</h1>
         <p>Thank you for your payment. Your transaction has been completed successfully.</p>
         <div>
-            <a href="{{ route('seller.login') }}" class="btn">Go to Dashboard</a>
+            <a href="{{ route('user.login') }}" class="btn">Go to Dashboard</a>
             {{-- <a href="/login" class="btn btn-secondary">Login</a> --}}
         </div>
     </div>

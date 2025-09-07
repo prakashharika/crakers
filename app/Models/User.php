@@ -17,10 +17,17 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        $this->table = 'users'; // Force the table name
+    }
     protected $fillable = [
         'name',
         'email',
+        'phone',
         'password',
+        'role',
     ];
 
     /**
