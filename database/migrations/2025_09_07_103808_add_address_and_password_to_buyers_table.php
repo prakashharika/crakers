@@ -18,7 +18,6 @@ return new class extends Migration {
             $table->string('password')->after('address');
 
             // Optional: Add remember token for "remember me" functionality
-            $table->rememberToken()->after('password');
 
             // $table->timestamps();
         });

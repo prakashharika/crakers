@@ -12,7 +12,6 @@ return new class extends Migration {
     {
         Schema::table('orders', function (Blueprint $table) {
             // Add foreign key constraints if they don't exist
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->foreign('buyer_id')->references('id')->on('buyers')->onDelete('cascade');
             $table->foreign('address_id')->references('id')->on('addresses')->onDelete('cascade');
         });
@@ -24,7 +23,6 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->dropForeign(['product_id']);
             $table->dropForeign(['buyer_id']);
             $table->dropForeign(['address_id']);
         });
