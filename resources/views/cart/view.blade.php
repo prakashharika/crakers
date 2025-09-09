@@ -104,30 +104,43 @@
                 </div>
             </div>
             <div class="col-lg-4">
-                <div class="cart-summary">
-                    <h3 class="mb-4">Order Summary</h3>
-                    
-                     <div class="d-flex justify-content-between mb-2">
-                        <span class="cart-subtotal-label">Subtotal ({{ $cartCount }} items)</span>
-                        <span class="cart-subtotal-value">₹{{ number_format($cartTotal, 2) }}</span>
-                    </div>
-                    
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Shipping</span>
-                        <span class="text-success">Free</span>
-                    </div>
-                    
-                    <!-- <div class="d-flex justify-content-between mb-2">
-                        <span>Tax</span>
-                        <span>₹{{ number_format($cartTotal * 0.18, 2) }}</span> Assuming 18% tax
-                    </div> -->
-                    
-                    <hr>
-                    
-                   <div class="d-flex justify-content-between mb-4">
-                    <strong>Total</strong>
-                    <strong class="cart-total-value">₹{{ number_format($cartTotal, 2) }}</strong>
-                </div>
+           <div class="cart-summary">
+    <h3 class="mb-4">Order Summary</h3>
+    
+    <div class="d-flex justify-content-between mb-2">
+        <span class="cart-subtotal-label">Subtotal ({{ $cartCount }} items)</span>
+        <span class="cart-subtotal-value">₹{{ number_format($cartTotal, 2) }}</span>
+    </div>
+    
+    <!-- Packing Charge (3%) -->
+    @php
+        $packingCharge = $cartTotal * 0.03;
+    @endphp
+    <div class="d-flex justify-content-between mb-2">
+        <span class="cart-packing-label">Packing Charge (3%)</span>
+        <span class="cart-packing-value">₹{{ number_format($packingCharge, 2) }}</span>
+    </div>
+    
+    <!-- GST (18% on subtotal only) -->
+    @php
+        $gst = ($cartTotal + $packingCharge) * 0.18; // GST on subtotal only
+    @endphp
+    <div class="d-flex justify-content-between mb-2">
+        <span class="cart-gst-label">GST (18%)</span>
+        <span class="cart-gst-value">₹{{ number_format($gst, 2) }}</span>
+    </div>
+    
+    <hr>
+    
+    <!-- Grand Total -->
+    @php
+        $grandTotal = $cartTotal + $packingCharge + $gst;
+    @endphp
+    <div class="d-flex justify-content-between mb-4">
+        <strong>Total</strong>
+        <strong class="cart-total-value">₹{{ number_format($grandTotal, 2) }}</strong>
+    </div>
+
                     
                     <a href="{{ route('checkout') }}" class="btn btn-primary w-100 mb-3">Proceed to Checkout</a>
                     <a href="{{ url('/') }}" class="btn btn-outline-secondary w-100">Continue Shopping</a>
@@ -293,25 +306,42 @@ function updateCartQuantity(productId, quantity) {
             });
         }
         
-        function updateCartSummary(data) {
-                // Update subtotal value
-                const subtotalValue = document.querySelector('.cart-subtotal-value');
-                if (subtotalValue) {
-                    subtotalValue.textContent = '₹' + data.cart_total.toFixed(2);
-                }
+function updateCartSummary(data) {
+    // Use server-calculated values instead of calculating in JavaScript
+    const packingCharge = data.packing_charge || 0;
+    const gst = data.gst || 0;
+    const grandTotal = data.grand_total || 0;
 
-                // Update total value
-                const totalValue = document.querySelector('.cart-total-value');
-                if (totalValue) {
-                    totalValue.textContent = '₹' + data.cart_total.toFixed(2);
-                }
+    // Update subtotal value
+    const subtotalValue = document.querySelector('.cart-subtotal-value');
+    if (subtotalValue) {
+        subtotalValue.textContent = '₹' + data.cart_total.toFixed(2);
+    }
 
-                // Update item count in subtotal label
-                const subtotalLabel = document.querySelector('.cart-subtotal-label');
-                if (subtotalLabel) {
-                    subtotalLabel.textContent = `Subtotal (${data.cart_count} items)`;
-                }
-            }
+    // Update packing charge value
+    const packingValue = document.querySelector('.cart-packing-value');
+    if (packingValue) {
+        packingValue.textContent = '₹' + packingCharge.toFixed(2);
+    }
+
+    // Update GST value
+    const gstValue = document.querySelector('.cart-gst-value');
+    if (gstValue) {
+        gstValue.textContent = '₹' + gst.toFixed(2);
+    }
+
+    // Update total value
+    const totalValue = document.querySelector('.cart-total-value');
+    if (totalValue) {
+        totalValue.textContent = '₹' + grandTotal.toFixed(2);
+    }
+
+    // Update item count in subtotal label
+    const subtotalLabel = document.querySelector('.cart-subtotal-label');
+    if (subtotalLabel) {
+        subtotalLabel.textContent = `Subtotal (${data.cart_count} items)`;
+    }
+}
 
         
         function updateCartCount(count) {

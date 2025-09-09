@@ -59,7 +59,7 @@
 <body>
     <!-- Include your header/navigation here -->
 <div class="container my-5">
-    <h2 class="mb-4">Checkout</h2>
+    <h4 class="mb-4">Checkout</h4>
 
     @if(session('error'))
         <div class="alert alert-danger">{{ session('error') }}</div>
@@ -75,8 +75,8 @@
           
             <div class="col-md-6 mb-4">
                 <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">Shipping Address</h5>
+                    <div class="card-header" style="background:#010e2d !important;color:#fff !important;">
+                        <h5 style="background:#010e2d !important;color:#fff !important;" class="mb-0">Shipping Address</h5>
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
@@ -111,26 +111,55 @@
             <div class="col-md-6 mb-4">
                 <h4>Order Summary</h4>
 
-                <div class="card">
-                    <ul class="list-group list-group-flush">
-                        @foreach($cart as $productId => $item)
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <strong>{{ $item['name'] }}</strong><br>
-                                    <small>{{ $item['quantity'] }} × ₹{{ number_format($item['price'], 2) }}</small>
-                                </div>
-                                <span class="fw-bold">₹{{ number_format($item['price'] * $item['quantity'], 2) }}</span>
-                            </li>
-                        @endforeach
-
-                        <li class="list-group-item d-flex justify-content-between">
-                            <span><strong>Total</strong></span>
-                            <span><strong>₹{{ number_format($cartTotal, 2) }}</strong></span>
-                        </li>
-                    </ul>
+<div class="card">
+    <ul class="list-group list-group-flush">
+        @foreach($cart as $productId => $item)
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{{ $item['name'] }}</strong><br>
+                    <small>{{ $item['quantity'] }} × ₹{{ number_format($item['price'], 2) }}</small>
                 </div>
+                <span class="fw-bold">₹{{ number_format($item['price'] * $item['quantity'], 2) }}</span>
+            </li>
+        @endforeach
 
-                <button type="submit" class="btn btn-success mt-4 w-100">Place Order</button>
+        <!-- Subtotal -->
+        <li class="list-group-item d-flex justify-content-between">
+            <span>Subtotal</span>
+            <span>₹{{ number_format($cartTotal, 2) }}</span>
+        </li>
+
+        <!-- Packing Charge (3%) -->
+        @php
+            $packingCharge = $cartTotal * 0.03;
+        @endphp
+        <li class="list-group-item d-flex justify-content-between">
+            <span>Packing Charge (3%)</span>
+            <span>₹{{ number_format($packingCharge, 2) }}</span>
+        </li>
+
+        <!-- GST (18% on subtotal + packing charge) -->
+        @php
+            $gstBase = $cartTotal + $packingCharge;
+            $gst = $gstBase * 0.18;
+        @endphp
+        <li class="list-group-item d-flex justify-content-between">
+            <span>GST (18%)</span>
+            <span>₹{{ number_format($gst, 2) }}</span>
+        </li>
+
+        <!-- Grand Total -->
+        @php
+            $grandTotal = $cartTotal + $packingCharge + $gst;
+        @endphp
+        <li class="list-group-item d-flex justify-content-between">
+            <span><strong>Grand Total</strong></span>
+            <span><strong>₹{{ number_format($grandTotal, 2) }}</strong></span>
+        </li>
+    </ul>
+</div>
+
+                <button type="submit" style="background:#0580D1 !important;" class="btn btn-success mt-4 w-100">Place Order</button>
             </div>
         </div>
     </form>

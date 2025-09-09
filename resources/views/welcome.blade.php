@@ -89,74 +89,88 @@
         </section>
         <!-- /Category -->
         <!-- Box Image -->
-        <div class="flat-spacing pt-0">
-            <div class="container">
-                <div dir="ltr" class="swiper tf-swiper" data-preview="3" data-tablet="2" data-mobile-sm="1" data-mobile="1" data-space-lg="48"
-                    data-space-md="32" data-space="12" data-pagination="1" data-pagination-sm="1" data-pagination-md="2" data-pagination-lg="3">
-                    <div class="swiper-wrapper">
-                    <!-- item 1 -->
-                        <div class="swiper-slide">
-                            <div class="box-image_V05 type-space-2 hover-img wow fadeInLeft">
-                                <a href="javascript:void(0)" class="box-image_image img-style">
-                                    <img src="{{asset('front-end/images/products/cracker-sparklers.jpg')}}" data-src="{{asset('front-end/images/products/cracker-sparklers.jpg')}}" alt="Sparklers" class="lazyload">
-                                </a>
-                                <div class="box-image_content">
-                                    <p class="sub-title text-primary h6 fw-semibold">Festival Offer 30% OFF</p>
-                                    <h4 class="title">
-                                        <a href="javascript:void(0)" class="link">
-                                            Colorful Sparklers Pack
-                                        </a>
-                                    </h4>
-                                    <a href="javascript:void(0)" class="tf-btn-line fw-bold letter-space-0">
-                                        Shop now
-                                    </a>
+ <!-- Best Sellers Section -->
+@if($BestSellerProduct->count() > 0)
+    <section class="flat-spacing bg-white-smoke">
+        <div class="container">
+            <div class="sect-title type-3 type-2 pb-0 border-0 wow fadeInUp">
+                <h2 class="s-title type-semibold text-nowrap">Best Sellers</h2>
+                <a href="javascript:void(0)" class="tf-btn-icon h6 fw-medium text-nowrap">
+                    View All Products
+                    <i class="icon icon-caret-circle-right"></i>
+                </a>
+            </div>
+            <div class="tf-pag-swiper">
+                <div class="tf-btn-swiper-main pst-4">
+                    <div dir="ltr" class="swiper tf-swiper wow fadeInUp" data-preview="3" data-tablet="2.5" data-mobile-sm="2" data-mobile="1"
+                        data-space-lg="48" data-space-md="24" data-space="12" data-pagination="1" data-pagination-sm="2" data-pagination-md="2"
+                        data-pagination-lg="1">
+                        <div class="swiper-wrapper">
+                            @foreach ($BestSellerProduct as $bestSellerItem)
+                                @php
+                                    $product = $bestSellerItem->product;
+                                    $category = $product->category;
+                                @endphp
+                                <div class="swiper-slide">
+                                    <div class="card-product style-5 style-padding">
+                                        <div class="card-product_wrapper aspect-ratio-0 d-flex">
+                                            <a href="javascript:void(0)" class="product-img">
+                                                <img class="lazyload img-product" 
+                                                    src="{{ asset($product->images) }}" 
+                                                    data-src="{{ asset($product->images) }}" 
+                                                    alt="{{ $product->name }}">
+                                            </a>
+                                            <ul class="product-action_list">
+                                                <li>
+                                                    <a href="#shoppingCart" data-bs-toggle="offcanvas" 
+                                                       class="hover-tooltip tooltip-left box-icon add-to-cart-btn"
+                                                       data-product-id="{{ $product->id }}">
+                                                        <span class="icon icon-shopping-cart-simple"></span>
+                                                        <span class="tooltip">Add to cart</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#quickView" data-bs-toggle="modal" class="hover-tooltip tooltip-left box-icon">
+                                                        <span class="icon icon-view"></span>
+                                                        <span class="tooltip">Quick view</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="card-product_info d-grid">
+                                            <p class="tag-product text-small">{{ $category->name ?? 'Uncategorized' }}</p>
+                                            <h6 class="name-product">
+                                                <a href="javascript:void(0)" class="link">{{ $product->name }}</a>
+                                            </h6>
+                                            <div class="rate_wrap w-100">
+                                                @for ($i = 0; $i < 5; $i++)
+                                                    <i class="icon-star text-star"></i>
+                                                @endfor
+                                            </div>
+                                            <div class="price-wrap">
+                                                <h4 class="price-new">₹{{ number_format($product->selling_price, 2) }}</h4>
+                                                @if($product->base_price > $product->selling_price)
+                                                    <span class="price-old h6">₹{{ number_format($product->base_price, 2) }}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            @endforeach
                         </div>
-                        <!-- item 2 -->
-                        <div class="swiper-slide">
-                            <div class="box-image_V05 type-space-2 hover-img wow fadeInLeft" data-wow-delay="0.1s">
-                                <a href="javascript:void(0)" class="box-image_image img-style">
-                                    <img src="{{asset('front-end/images/products/cracker-flowerpot.jpg')}}" data-src="{{asset('front-end/images/products/cracker-flowerpot.jpg')}}" alt="Flower Pots" class="lazyload">
-                                </a>
-                                <div class="box-image_content">
-                                    <p class="sub-title text-primary h6 fw-semibold">Festival Combo Offer</p>
-                                    <h4 class="title">
-                                        <a href="javascript:void(0)" class="link">
-                                            Flower Pots (Anar) Pack
-                                        </a>
-                                    </h4>
-                                    <a href="javascript:void(0)" class="tf-btn-line fw-bold letter-space-0">
-                                        Shop now
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- item 3 -->
-                        <div class="swiper-slide">
-                            <div class="box-image_V05 type-space-2 hover-img wow fadeInLeft" data-wow-delay="0.2s">
-                                <a href="javascript:void(0)" class="box-image_image img-style">
-                                    <img src="{{asset('front-end/images/products/cracker-rockets.jpeg')}}" data-src="{{asset('front-end/images/products/cracker-rockets.jpeg')}}" alt="Rockets" class="lazyload">
-                                </a>
-                                <div class="box-image_content">
-                                    <p class="sub-title text-primary h6 fw-semibold">Big Sale up to 40% OFF</p>
-                                    <h4 class="title">
-                                        <a href="javascript:void(0)" class="link">
-                                            Sky Rocket Assorted Box
-                                        </a>
-                                    </h4>
-                                    <a href="javascript:void(0)" class="tf-btn-line fw-bold letter-space-0">
-                                        Shop now
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
-                    <div class="sw-dot-default tf-sw-pagination"></div>
+                    <div class="tf-sw-nav type-small-2 nav-prev-swiper d-xl-flex">
+                        <i class="icon icon-arrow-left"></i>
+                    </div>
+                    <div class="tf-sw-nav type-small-2 nav-next-swiper d-xl-flex">
+                        <i class="icon icon-arrow-right"></i>
+                    </div>
                 </div>
+                <div class="sw-dot-default-2 tf-sw-pagination"></div>
             </div>
         </div>
+    </section>
+@endif
         <!-- /Box Image -->
         <!-- Banner Countdown -->
         <div class="themesFlat">
@@ -285,337 +299,91 @@
             </div>
         </section>
         <!-- /Feature Product -->
-        <!-- Product On Sale -->
-        <section class="flat-spacing bg-white-smoke">
-            <div class="container">
-                <div class="sect-title type-3 type-2 pb-0 border-0 wow fadeInUp">
-                    <h2 class="s-title type-semibold text-nowrap">Product On-sale</h2>
-                    <a href="javascript:void(0)" class="tf-btn-icon h6 fw-medium text-nowrap">
-                        View All Product
-                        <i class="icon icon-caret-circle-right"></i>
-                    </a>
-                </div>
-                <div class="tf-pag-swiper">
-                    <div class=" tf-btn-swiper-main pst-4">
-                        <div dir="ltr" class="swiper tf-swiper wow fadeInUp" data-preview="3" data-tablet="2.5" data-mobile-sm="2" data-mobile="1"
-                            data-space-lg="48" data-space-md="24" data-space="12" data-pagination="1" data-pagination-sm="2" data-pagination-md="2"
-                            data-pagination-lg="1">
-                            <div class="swiper-wrapper">
-                                <!-- Product 1 -->
-                                <div class="swiper-slide">
-                                    <div class="card-product style-5 style-padding">
-                                        <div class="card-product_wrapper aspect-ratio-0 d-flex">
-                                            <a href="javascript:void(0)" class="product-img">
-                                                <img class="lazyload img-product" src="{{asset('front-end/images/products/7shot.jpeg')}}"
-                                                    data-src="{{asset('front-end/images/products/7shot.jpeg')}}" alt="Product">
+   
+<!-- On Sale Section -->
+@if($OnSaleProduct->count() > 0)
+    <section class="flat-spacing">
+        <div class="container">
+            <div class="sect-title type-3 type-2 wow fadeInUp">
+                <h2 class="s-title type-semibold">Products On Sale</h2>
+                <a href="javascript:void(0)" class="tf-btn-icon h6 fw-medium">
+                    View All Products
+                    <i class="icon icon-caret-circle-right"></i>
+                </a>
+            </div>
+            <div dir="ltr" class="swiper tf-swiper wrap-sw-over wow fadeInUp" data-preview="3" data-tablet="2" data-mobile-sm="1" data-mobile="1"
+                data-space-lg="48" data-space-md="24" data-space="12" data-pagination="1" data-pagination-sm="1" data-pagination-md="2"
+                data-pagination-lg="3" data-grid="2">
+                <div class="swiper-wrapper">
+                    @foreach ($OnSaleProduct as $onSaleItem)
+                        @php
+                            $product = $onSaleItem->product;
+                            $category = $product->category;
+                        @endphp
+                        <div class="swiper-slide">
+                            <div class="card-product style-5">
+                                <div class="card-product_wrapper aspect-ratio-0 d-flex">
+                                    <a href="javascript:void(0)" class="product-img">
+                                        <img class="lazyload img-product" 
+                                            src="{{ asset($product->images) }}" 
+                                            data-src="{{ asset($product->images) }}" 
+                                            alt="{{ $product->name }}">
+                                    </a>
+                                    <ul class="product-action_list">
+                                        <li>
+                                            <a href="#shoppingCart" data-bs-toggle="offcanvas" 
+                                               class="hover-tooltip tooltip-left box-icon add-to-cart-btn"
+                                               data-product-id="{{ $product->id }}">
+                                                <span class="icon icon-shopping-cart-simple"></span>
+                                                <span class="tooltip">Add to cart</span>
                                             </a>
-                                            <ul class="product-action_list">
-                                                <li>
-                                                    <a href="#shoppingCart" data-bs-toggle="offcanvas" class="hover-tooltip tooltip-left box-icon">
-                                                        <span class="icon icon-shopping-cart-simple"></span>
-                                                        <span class="tooltip">Add to cart</span>
-                                                    </a>
-                                                </li>
-                                                {{-- <li class="wishlist">
-                                                    <a href="javascript:void(0);" class="hover-tooltip tooltip-left box-icon">
-                                                        <span class="icon icon-heart"></span>
-                                                        <span class="tooltip">Add to Wishlist</span>
-                                                    </a>
-                                                </li> --}}
-                                                
-                                                <li>
-                                                    <a href="#quickView" data-bs-toggle="modal" class="hover-tooltip tooltip-left box-icon">
-                                                        <span class="icon icon-view"></span>
-                                                        <span class="tooltip">Quick view</span>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="card-product_info d-grid">
-                                            <p class="tag-product text-small">Laptop</p>
-                                            <h6 class="name-product">
-                                                <a href="javascript:void(0)" class="link">Apple 2025 MacBook Air 13-inch Laptop with M4 chip: Built
-                                                    for
-                                                    Apple
-                                                    Intelligence</a>
-                                            </h6>
-                                            <div class="rate_wrap w-100">
-                                                <i class="icon-star text-star"></i>
-                                                <i class="icon-star text-star"></i>
-                                                <i class="icon-star text-star"></i>
-                                                <i class="icon-star text-star"></i>
-                                                <i class="icon-star text-star"></i>
-                                            </div>
-                                            <div class="price-wrap">
-                                                <h4 class="price-new">$599.00</h4>
-                                                <span class="price-old h6">$699.00</span>
-                                            </div>
-                                            <div class="product-progress_sold">
-                                                <div class="progress-sold progress" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                                                    <div class="progress-bar" style="width: 80%"></div>
-                                                </div>
-                                                <div class="box-quantity">
-                                                    <p class="text-avaiable">
-                                                        Available: <span class="fw-bold text-black">57</span>
-                                                    </p>
-                                                    <p class="text-avaiable">
-                                                        Sold: <span class="fw-bold text-black">72</span>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                        </li>
+                                        <li>
+                                            <a href="#quickView" data-bs-toggle="modal" class="hover-tooltip tooltip-left box-icon">
+                                                <span class="icon icon-view"></span>
+                                                <span class="tooltip">Quick view</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    @if($product->base_price > $product->selling_price)
+                                        <ul class="product-badge_list">
+                                            <li class="product-badge_item h6 sale">
+                                                -{{ round((($product->base_price - $product->selling_price) / $product->base_price) * 100) }}%
+                                            </li>
+                                        </ul>
+                                    @endif
                                 </div>
-                                <!-- Product 2 -->
-                                <div class="swiper-slide">
-                                    <div class="card-product style-5 style-padding">
-                                        <div class="card-product_wrapper aspect-ratio-0 d-flex">
-                                            <a href="javascript:void(0)" class="product-img">
-                                                <img class="lazyload img-product" src="{{asset('front-end/images/products/eee.png')}}"
-                                                    data-src="{{asset('front-end/images/products/eee.png')}}" alt="Product">
-                                            </a>
-                                            <ul class="product-action_list">
-                                                <li>
-                                                    <a href="#shoppingCart" data-bs-toggle="offcanvas" class="hover-tooltip tooltip-left box-icon">
-                                                        <span class="icon icon-shopping-cart-simple"></span>
-                                                        <span class="tooltip">Add to cart</span>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#quickView" data-bs-toggle="modal" class="hover-tooltip tooltip-left box-icon">
-                                                        <span class="icon icon-view"></span>
-                                                        <span class="tooltip">Quick view</span>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="card-product_info d-grid">
-                                            <p class="tag-product text-small">Headphone</p>
-                                            <h6 class="name-product">
-                                                <a href="javascript:void(0)" class="link">Sony WH-1000XM4 Wireless Premium Noise Canceling Overhead
-                                                    Headphones</a>
-                                            </h6>
-                                            <div class="rate_wrap w-100">
-                                                <i class="icon-star text-star"></i>
-                                                <i class="icon-star text-star"></i>
-                                                <i class="icon-star text-star"></i>
-                                                <i class="icon-star text-star"></i>
-                                                <i class="icon-star text-star"></i>
-                                            </div>
-                                            <div class="price-wrap">
-                                                <h4 class="price-new">$300.00</h4>
-                                                <span class="price-old h6">$499.00</span>
-                                            </div>
-                                            <div class="product-progress_sold">
-                                                <div class="progress-sold progress" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                                                    <div class="progress-bar" style="width: 30%"></div>
-                                                </div>
-                                                <div class="box-quantity">
-                                                    <p class="text-avaiable">
-                                                        Available: <span class="fw-bold text-black">40</span>
-                                                    </p>
-                                                    <p class="text-avaiable">
-                                                        Sold: <span class="fw-bold text-black">120</span>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
+                                <div class="card-product_info d-grid">
+                                    <p class="tag-product text-small">{{ $category->name ?? 'Uncategorized' }}</p>
+                                    <h6 class="name-product">
+                                        <a href="javascript:void(0)" class="link">{{ $product->name }}</a>
+                                    </h6>
+                                    <div class="rate_wrap w-100">
+                                        @for ($i = 0; $i < 5; $i++)
+                                            <i class="icon-star text-star"></i>
+                                        @endfor
                                     </div>
-                                </div>
-                                <!-- Product 3 -->
-                                <div class="swiper-slide">
-                                    <div class="card-product style-5 style-padding">
-                                        <div class="card-product_wrapper aspect-ratio-0 d-flex">
-                                            <a href="javascript:void(0)" class="product-img">
-                                                <img class="lazyload img-product" src="{{asset('front-end/images/products/pattasu.jpg')}}"
-                                                    data-src="{{asset('front-end/images/products/pattasu.jpg')}}" alt="Product">
-                                            </a>
-                                            <ul class="product-action_list">
-                                                <li>
-                                                    <a href="#shoppingCart" data-bs-toggle="offcanvas" class="hover-tooltip tooltip-left box-icon">
-                                                        <span class="icon icon-shopping-cart-simple"></span>
-                                                        <span class="tooltip">Add to cart</span>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#quickView" data-bs-toggle="modal" class="hover-tooltip tooltip-left box-icon">
-                                                        <span class="icon icon-view"></span>
-                                                        <span class="tooltip">Quick view</span>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="card-product_info d-grid">
-                                            <p class="tag-product text-small">Headphone</p>
-                                            <h6 class="name-product">
-                                                <a href="javascript:void(0)" class="link">Wireless Earbuds, 2025 Ear Buds with Big Bass Stereo Sound,
-                                                    Bluetooth</a>
-                                            </h6>
-                                            <div class="rate_wrap w-100">
-                                                <i class="icon-star text-star"></i>
-                                                <i class="icon-star text-star"></i>
-                                                <i class="icon-star text-star"></i>
-                                                <i class="icon-star text-star"></i>
-                                                <i class="icon-star text-star"></i>
-                                            </div>
-                                            <div class="price-wrap">
-                                                <h4 class="price-new">$199.00</h4>
-                                                <span class="price-old h6">$299.00</span>
-                                            </div>
-                                            <div class="product-progress_sold">
-                                                <div class="progress-sold progress" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                                                    <div class="progress-bar" style="width: 50%"></div>
-                                                </div>
-                                                <div class="box-quantity">
-                                                    <p class="text-avaiable">
-                                                        Available: <span class="fw-bold text-black">29</span>
-                                                    </p>
-                                                    <p class="text-avaiable">
-                                                        Sold: <span class="fw-bold text-black">112</span>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Product 1 -->
-                                <div class="swiper-slide">
-                                    <div class="card-product style-5 style-padding">
-                                        <div class="card-product_wrapper aspect-ratio-0 d-flex">
-                                            <a href="javascript:void(0)" class="product-img">
-                                                <img class="lazyload img-product" src="images/products/electronic/product-9.jpg"
-                                                    data-src="images/products/electronic/product-9.jpg" alt="Product">
-                                                <img class="lazyload img-hover" src="images/products/electronic/product-10.jpg"
-                                                    data-src="images/products/electronic/product-10.jpg" alt="Product">
-                                            </a>
-                                            <ul class="product-action_list">
-                                                <li>
-                                                    <a href="#shoppingCart" data-bs-toggle="offcanvas" class="hover-tooltip tooltip-left box-icon">
-                                                        <span class="icon icon-shopping-cart-simple"></span>
-                                                        <span class="tooltip">Add to cart</span>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#quickView" data-bs-toggle="modal" class="hover-tooltip tooltip-left box-icon">
-                                                        <span class="icon icon-view"></span>
-                                                        <span class="tooltip">Quick view</span>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="card-product_info d-grid">
-                                            <p class="tag-product text-small">Laptop</p>
-                                            <h6 class="name-product">
-                                                <a href="javascript:void(0)" class="link">Apple 2025 MacBook Air 13-inch Laptop with M4 chip: Built
-                                                    for
-                                                    Apple
-                                                    Intelligence</a>
-                                            </h6>
-                                            <div class="rate_wrap w-100">
-                                                <i class="icon-star text-star"></i>
-                                                <i class="icon-star text-star"></i>
-                                                <i class="icon-star text-star"></i>
-                                                <i class="icon-star text-star"></i>
-                                                <i class="icon-star text-star"></i>
-                                            </div>
-                                            <div class="price-wrap">
-                                                <h4 class="price-new">$599.00</h4>
-                                                <span class="price-old h6">$699.00</span>
-                                            </div>
-                                            <div class="product-progress_sold">
-                                                <div class="progress-sold progress" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                                                    <div class="progress-bar" style="width: 80%"></div>
-                                                </div>
-                                                <div class="box-quantity">
-                                                    <p class="text-avaiable">
-                                                        Available: <span class="fw-bold text-black">57</span>
-                                                    </p>
-                                                    <p class="text-avaiable">
-                                                        Sold: <span class="fw-bold text-black">72</span>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Product 2 -->
-                                <div class="swiper-slide">
-                                    <div class="card-product style-5 style-padding">
-                                        <div class="card-product_wrapper aspect-ratio-0 d-flex">
-                                            <a href="javascript:void(0)" class="product-img">
-                                                <img class="lazyload img-product" src="images/products/electronic/product-11.jpg"
-                                                    data-src="images/products/electronic/product-11.jpg" alt="Product">
-                                                <img class="lazyload img-hover" src="images/products/electronic/product-12.jpg"
-                                                    data-src="images/products/electronic/product-12.jpg" alt="Product">
-                                            </a>
-                                            <ul class="product-action_list">
-                                                <li>
-                                                    <a href="#shoppingCart" data-bs-toggle="offcanvas" class="hover-tooltip tooltip-left box-icon">
-                                                        <span class="icon icon-shopping-cart-simple"></span>
-                                                        <span class="tooltip">Add to cart</span>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#quickView" data-bs-toggle="modal" class="hover-tooltip tooltip-left box-icon">
-                                                        <span class="icon icon-view"></span>
-                                                        <span class="tooltip">Quick view</span>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="card-product_info d-grid">
-                                            <p class="tag-product text-small">Headphone</p>
-                                            <h6 class="name-product">
-                                                <a href="javascript:void(0)" class="link">Sony WH-1000XM4 Wireless Premium Noise Canceling Overhead
-                                                    Headphones</a>
-                                            </h6>
-                                            <div class="rate_wrap w-100">
-                                                <i class="icon-star text-star"></i>
-                                                <i class="icon-star text-star"></i>
-                                                <i class="icon-star text-star"></i>
-                                                <i class="icon-star text-star"></i>
-                                                <i class="icon-star text-star"></i>
-                                            </div>
-                                            <div class="price-wrap">
-                                                <h4 class="price-new">$300.00</h4>
-                                                <span class="price-old h6">$499.00</span>
-                                            </div>
-                                            <div class="product-progress_sold">
-                                                <div class="progress-sold progress" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                                                    <div class="progress-bar" style="width: 30%"></div>
-                                                </div>
-                                                <div class="box-quantity">
-                                                    <p class="text-avaiable">
-                                                        Available: <span class="fw-bold text-black">40</span>
-                                                    </p>
-                                                    <p class="text-avaiable">
-                                                        Sold: <span class="fw-bold text-black">120</span>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div class="price-wrap mb-0">
+                                        <h4 class="price-new">₹{{ number_format($product->selling_price, 2) }}</h4>
+                                        @if($product->base_price > $product->selling_price)
+                                            <span class="price-old h6">₹{{ number_format($product->base_price, 2) }}</span>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
-
                         </div>
-                        <div class="tf-sw-nav type-small-2 nav-prev-swiper d-xl-flex">
-                            <i class="icon icon-arrow-left"></i>
-                        </div>
-                        <div class="tf-sw-nav type-small-2 nav-next-swiper d-xl-flex">
-                            <i class="icon icon-arrow-right"></i>
-                        </div>
-                    </div>
-                    <div class="sw-dot-default-2 tf-sw-pagination"></div>
+                    @endforeach
                 </div>
+                <div class="sw-dot-default tf-sw-pagination"></div>
             </div>
-        </section>
-        <!-- /Product On Sale -->
+        </div>
+    </section>
+@endif
         <!-- Best Seller -->
         <section class="flat-spacing">
             <div class="container">
                 <div class="sect-title type-3 type-2 wow fadeInUp">
-                    <h2 class="s-title type-semibold text-nowrap">Product Best Sellers</h2>
+                    <h2 class="s-title type-semibold text-nowrap">Product New Lunched</h2>
                     <a href="javascript:void(0)" class="tf-btn-icon h6 fw-medium text-nowrap">
                         View All Product
                         <i class="icon icon-caret-circle-right"></i>
@@ -728,219 +496,85 @@
             </div>
         </section>
         <!-- /Voucher -->
-        <!-- Feature -->
-        <section class="flat-spacing">
-            <div class="container">
-                <div class="sect-title type-3 type-2 wow fadeInUp">
-                    <h2 class="s-title type-semibold">Featured Products</h2>
-                    <a href="javascript:void(0)" class="tf-btn-icon h6 fw-medium">
-                        View All Product
-                        <i class="icon icon-caret-circle-right"></i>
-                    </a>
-                </div>
-                <div dir="ltr" class="swiper tf-swiper wrap-sw-over wow fadeInUp" data-preview="3" data-tablet="2" data-mobile-sm="1" data-mobile="1"
-                    data-space-lg="48" data-space-md="24" data-space="12" data-pagination="1" data-pagination-sm="1" data-pagination-md="2"
-                    data-pagination-lg="3" data-grid="2">
-                <div class="swiper-wrapper">
-                    <!-- Product 1 -->
-                    <div class="swiper-slide">
-                        <div class="card-product product-style_list-mini type-2 hover-img">
-                            <div class="card-product_wrapper">
-                                <a href="javascript:void(0)" class="product-img img-style">
-                                    <img class="img-product lazyload" src="{{asset('front-end/images/products/crackers/auto-bomb.jpg')}}"
-                                        data-src="{{asset('front-end/images/products/crackers/auto-bomb.jpg')}}" alt="Auto Bomb">
-                                </a>
-                            </div>
-                            <div class="card-product_info">
-                                <p class="tag-product text-small">Bomb</p>
-                                <h6 class="name-product">
-                                    <a href="javascript:void(0)" class="text-line-clamp-2 link">Auto Bomb – Loud & Thrilling Blast</a>
-                                </h6>
-                                <div class="group-action">
-                                    <div class="price-wrap mb-0">
-                                        <h4 class="price-new">₹199.00</h4>
-                                        <span class="price-old h6">₹249.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Product 2 -->
-                    <div class="swiper-slide">
-                        <div class="card-product product-style_list-mini type-2 hover-img">
-                            <div class="card-product_wrapper">
-                                <a href="javascript:void(0)" class="product-img img-style">
-                                    <img class="img-product lazyload" src="{{asset('front-end/images/products/crackers/sky-shots.jpg')}}"
-                                        data-src="{{asset('front-end/images/products/crackers/sky-shots.jpg')}}" alt="Rocket">
-                                </a>
-                            </div>
-                            <div class="card-product_info">
-                                <p class="tag-product text-small">Rocket</p>
-                                <h6 class="name-product">
-                                    <a href="javascript:void(0)" class="text-line-clamp-2 link">Sky Rocket – Colorful Burst</a>
-                                </h6>
-                                <div class="group-action">
-                                    <div class="price-wrap mb-0">
-                                        <h4 class="price-new">₹299.00</h4>
-                                        <span class="price-old h6">₹349.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Product 3 -->
-                    <div class="swiper-slide">
-                        <div class="card-product product-style_list-mini type-2 hover-img">
-                            <div class="card-product_wrapper">
-                                <a href="javascript:void(0)" class="product-img img-style">
-                                    <img class="img-product lazyload" src="{{asset('front-end/images/products/crackers/flower-pot.jpg')}}"
-                                        data-src="{{asset('front-end/images/products/crackers/flower-pot.jpg')}}" alt="Flower Pot">
-                                </a>
-                            </div>
-                            <div class="card-product_info">
-                                <p class="tag-product text-small">Fountain</p>
-                                <h6 class="name-product">
-                                    <a href="javascript:void(0)" class="text-line-clamp-2 link">Flower Pots – Sparkling Showers</a>
-                                </h6>
-                                <div class="group-action">
-                                    <div class="price-wrap mb-0">
-                                        <h4 class="price-new">₹149.00</h4>
-                                        <span class="price-old h6">₹199.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Product 4 -->
-                    <div class="swiper-slide">
-                        <div class="card-product product-style_list-mini type-2 hover-img">
-                            <div class="card-product_wrapper">
-                                <a href="javascript:void(0)" class="product-img img-style">
-                                    <img class="img-product lazyload" src="{{asset('front-end/images/products/crackers/ground-chakra.webp')}}"
-                                        data-src="{{asset('front-end/images/products/crackers/ground-chakra.webp')}}" alt="Ground Chakra">
-                                </a>
-                            </div>
-                            <div class="card-product_info">
-                                <p class="tag-product text-small">Spinner</p>
-                                <h6 class="name-product">
-                                    <a href="javascript:void(0)" class="text-line-clamp-2 link">Ground Chakras – Spinning Sparks</a>
-                                </h6>
-                                <div class="group-action">
-                                    <div class="price-wrap mb-0">
-                                        <h4 class="price-new">₹179.00</h4>
-                                        <span class="price-old h6">₹229.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Product 5 -->
-                    <div class="swiper-slide">
-                        <div class="card-product product-style_list-mini type-2 hover-img">
-                            <div class="card-product_wrapper">
-                                <a href="javascript:void(0)" class="product-img img-style">
-                                    <img class="img-product lazyload" src="{{asset('front-end/images/products/crackers/sparklers.png')}}"
-                                        data-src="{{asset('front-end/images/products/crackers/sparklers.png')}}" alt="Sparklers">
-                                </a>
-                            </div>
-                            <div class="card-product_info">
-                                <p class="tag-product text-small">Kids Special</p>
-                                <h6 class="name-product">
-                                    <a href="javascript:void(0)" class="text-line-clamp-2 link">Sparklers – Safe & Fun</a>
-                                </h6>
-                                <div class="group-action">
-                                    <div class="price-wrap mb-0">
-                                        <h4 class="price-new">₹99.00</h4>
-                                        <span class="price-old h6">₹129.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Product 6 -->
-                    <div class="swiper-slide">
-                        <div class="card-product product-style_list-mini type-2 hover-img">
-                            <div class="card-product_wrapper">
-                                <a href="javascript:void(0)" class="product-img img-style">
-                                    <img class="img-product lazyload" src="{{asset('front-end/images/products/crackers/garland.jpg')}}"
-                                        data-src="{{asset('front-end/images/products/crackers/garland.jpg')}}" alt="Garland Crackers">
-                                </a>
-                            </div>
-                            <div class="card-product_info">
-                                <p class="tag-product text-small">Garland</p>
-                                <h6 class="name-product">
-                                    <a href="javascript:void(0)" class="text-line-clamp-2 link">1000 Wala Garland Crackers</a>
-                                </h6>
-                                <div class="group-action">
-                                    <div class="price-wrap mb-0">
-                                        <h4 class="price-new">₹499.00</h4>
-                                        <span class="price-old h6">₹549.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Product 7 (with asset) -->
-                    <div class="swiper-slide">
-                        <div class="card-product product-style_list-mini type-2 hover-img">
-                            <div class="card-product_wrapper">
-                                <a href="javascript:void(0)" class="product-img img-style">
-                                    <img class="img-product lazyload" src="{{asset('front-end/images/products/crackers/sky-shots.jpg')}}"
-                                        data-src="{{asset('front-end/images/products/crackers/sky-shots.jpg')}}" alt="Sky Shots">
-                                </a>
-                            </div>
-                            <div class="card-product_info">
-                                <p class="tag-product text-small">Sky Show</p>
-                                <h6 class="name-product">
-                                    <a href="javascript:void(0)" class="text-line-clamp-2 link">Sky Shots – Multicolor Bursts</a>
-                                </h6>
-                                <div class="group-action">
-                                    <div class="price-wrap mb-0">
-                                        <h4 class="price-new">₹699.00</h4>
-                                        <span class="price-old h6">₹799.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Product 8 (with asset) -->
-                    <div class="swiper-slide">
-                        <div class="card-product product-style_list-mini type-2 hover-img">
-                            <div class="card-product_wrapper">
-                                <a href="javascript:void(0)" class="product-img img-style">
-                                    <img class="img-product lazyload" src="{{asset('front-end/images/products/crackers/whistling-rocket.png')}}"
-                                        data-src="{{asset('front-end/images/products/crackers/whistling-rocket.png')}}" alt="Whistling Rocket">
-                                </a>
-                            </div>
-                            <div class="card-product_info">
-                                <p class="tag-product text-small">Rocket</p>
-                                <h6 class="name-product">
-                                    <a href="javascript:void(0)" class="text-line-clamp-2 link">Whistling Rockets – High Sky Sound</a>
-                                </h6>
-                                <div class="group-action">
-                                    <div class="price-wrap mb-0">
-                                        <h4 class="price-new">₹399.00</h4>
-                                        <span class="price-old h6">₹459.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                    <div class="sw-dot-default tf-sw-pagination"></div>
-                </div>
+<!-- Featured Products Section -->
+@if($FeaturedProduct->count() > 0)
+    <section class="flat-spacing">
+        <div class="container">
+            <div class="sect-title type-3 type-2 wow fadeInUp">
+                <h2 class="s-title type-semibold">Featured Products</h2>
+                <a href="javascript:void(0)" class="tf-btn-icon h6 fw-medium">
+                    View All Products
+                    <i class="icon icon-caret-circle-right"></i>
+                </a>
             </div>
-        </section>
-        <!-- Feature -->
+            <div dir="ltr" class="swiper tf-swiper wrap-sw-over wow fadeInUp" data-preview="3" data-tablet="2" data-mobile-sm="1" data-mobile="1"
+                data-space-lg="48" data-space-md="24" data-space="12" data-pagination="1" data-pagination-sm="1" data-pagination-md="2"
+                data-pagination-lg="3" data-grid="2">
+                <div class="swiper-wrapper">
+                    @foreach ($FeaturedProduct as $featuredItem)
+                        @php
+                            $product = $featuredItem->product;
+                            $category = $product->category;
+                        @endphp
+                        <div class="swiper-slide">
+                            <div class="card-product style-5">
+                                <div class="card-product_wrapper aspect-ratio-0 d-flex">
+                                    <a href="javascript:void(0)" class="product-img">
+                                        <img class="lazyload img-product" 
+                                            src="{{ asset($product->images) }}" 
+                                            data-src="{{ asset($product->images) }}" 
+                                            alt="{{ $product->name }}">
+                                    </a>
+                                    <ul class="product-action_list">
+                                        <li>
+                                            <a href="#shoppingCart" data-bs-toggle="offcanvas" 
+                                               class="hover-tooltip tooltip-left box-icon add-to-cart-btn"
+                                               data-product-id="{{ $product->id }}">
+                                                <span class="icon icon-shopping-cart-simple"></span>
+                                                <span class="tooltip">Add to cart</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#quickView" data-bs-toggle="modal" class="hover-tooltip tooltip-left box-icon">
+                                                <span class="icon icon-view"></span>
+                                                <span class="tooltip">Quick view</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    @if($product->base_price > $product->selling_price)
+                                        <ul class="product-badge_list">
+                                            <li class="product-badge_item h6 sale">
+                                                -{{ round((($product->base_price - $product->selling_price) / $product->base_price) * 100) }}%
+                                            </li>
+                                        </ul>
+                                    @endif
+                                </div>
+                                <div class="card-product_info d-grid">
+                                    <p class="tag-product text-small">{{ $category->name ?? 'Uncategorized' }}</p>
+                                    <h6 class="name-product">
+                                        <a href="javascript:void(0)" class="link">{{ $product->name }}</a>
+                                    </h6>
+                                    <div class="rate_wrap w-100">
+                                        @for ($i = 0; $i < 5; $i++)
+                                            <i class="icon-star text-star"></i>
+                                        @endfor
+                                    </div>
+                                    <div class="price-wrap mb-0">
+                                        <h4 class="price-new">₹{{ number_format($product->selling_price, 2) }}</h4>
+                                        @if($product->base_price > $product->selling_price)
+                                            <span class="price-old h6">₹{{ number_format($product->base_price, 2) }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                <div class="sw-dot-default tf-sw-pagination"></div>
+            </div>
+        </div>
+    </section>
+@endif
         <!-- Best Seller -->
         <section class="flat-spacing pt-0">
             <div class="container">
@@ -955,170 +589,73 @@
                     data-space-lg="48" data-space-md="24" data-space="12" data-pagination="2" data-pagination-sm="2" data-pagination-md="3"
                     data-pagination-lg="4">
                   <div class="swiper-wrapper">
-                                <!-- Product 1 -->
-                                <div class="swiper-slide">
-                                    <div class="card-product style-5">
-                                        <div class="card-product_wrapper aspect-ratio-0 d-flex">
-                                            <a href="javascript:void(0)" class="product-img">
-                                                <img class="lazyload img-product" src="{{asset('front-end/images/products/crackers/sparklers.jpg')}}"
-                                                    data-src="{{asset('front-end/images/products/crackers/sparklers.jpg')}}" alt="Sparklers">
-                                            </a>
-                                            <ul class="product-action_list">
-                                                <li>
-                                                    <a href="#shoppingCart" data-bs-toggle="offcanvas" class="hover-tooltip tooltip-left box-icon">
-                                                        <span class="icon icon-shopping-cart-simple"></span>
-                                                        <span class="tooltip">Add to cart</span>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#quickView" data-bs-toggle="modal" class="hover-tooltip tooltip-left box-icon">
-                                                        <span class="icon icon-view"></span>
-                                                        <span class="tooltip">Quick view</span>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                            <ul class="product-badge_list">
-                                                <li class="product-badge_item h6 sale">-20%</li>
-                                            </ul>
-                                        </div>
-                                        <div class="card-product_info d-grid">
-                                            <p class="tag-product text-small">Sparklers</p>
-                                            <h6 class="name-product">
-                                                <a href="javascript:void(0)" class="link">Colorful Sparklers Pack (50 pcs)</a>
-                                            </h6>
-                                            <div class="rate_wrap w-100">
-                                                <i class="icon-star text-star"></i><i class="icon-star text-star"></i><i class="icon-star text-star"></i><i class="icon-star text-star"></i><i class="icon-star text-star"></i>
-                                            </div>
-                                            <div class="price-wrap mb-0">
-                                                <h4 class="price-new">₹299</h4>
-                                                <span class="price-old h6">₹375</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Product 2 -->
-                                <div class="swiper-slide">
-                                    <div class="card-product style-5">
-                                        <div class="card-product_wrapper aspect-ratio-0 d-flex">
-                                            <a href="javascript:void(0)" class="product-img">
-                                                <img class="lazyload img-product" src="{{asset('front-end/images/products/crackers/flowerpot.jpg')}}"
-                                                    data-src="{{asset('front-end/images/products/crackers/flowerpot.jpg')}}" alt="Flower Pots">
-                                            </a>
-                                            <ul class="product-action_list">
-                                                <li>
-                                                    <a href="#shoppingCart" data-bs-toggle="offcanvas" class="hover-tooltip tooltip-left box-icon">
-                                                        <span class="icon icon-shopping-cart-simple"></span>
-                                                        <span class="tooltip">Add to cart</span>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#quickView" data-bs-toggle="modal" class="hover-tooltip tooltip-left box-icon">
-                                                        <span class="icon icon-view"></span>
-                                                        <span class="tooltip">Quick view</span>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                            <ul class="product-badge_list">
-                                                <li class="product-badge_item h6 sale">-15%</li>
-                                            </ul>
-                                        </div>
-                                        <div class="card-product_info d-grid">
-                                            <p class="tag-product text-small">Flower Pots</p>
-                                            <h6 class="name-product">
+                               @isset($VoucherProduct)
+        @foreach ($VoucherProduct as $product)
+                @php
+            $product = $product->product; // Access the product relationship
+        @endphp
+            <div class="swiper-slide">
+                <div class="card-product style-5">
+                    <div class="card-product_wrapper aspect-ratio-0 d-flex">
+                        <a href="javascript:void(0)" class="product-img">
+                            <img class="lazyload img-product" 
+                                src="{{ asset($product->images) }}" 
+                                data-src="{{ asset($product->images) }}" 
+                                alt="{{ $product->name }}">
+                        </a>
+                        <ul class="product-action_list">
+                            <li>
+                                <a href="#shoppingCart" data-bs-toggle="offcanvas" 
+                                   class="hover-tooltip tooltip-left box-icon add-to-cart-btn"
+                                   data-product-id="{{ $product->id }}">
+                                    <span class="icon icon-shopping-cart-simple"></span>
+                                    <span class="tooltip">Add to cart</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#quickView" data-bs-toggle="modal" class="hover-tooltip tooltip-left box-icon">
+                                    <span class="icon icon-view"></span>
+                                    <span class="tooltip">Quick view</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="wg-quantity mb-2" style="display: none; justify-content: center;">
+                            <button type="button" class="btn-quantity btn-decrease">
+                                <i class="icon icon-minus"></i>
+                            </button>
+                            <input class="quantity-product" type="number" name="quantity" value="1" min="1" style="width: 50px; text-align: center;">
+                            <button type="button" class="btn-quantity btn-increase">
+                                <i class="icon icon-plus"></i>
+                            </button>
+                        </div>                        @if($product->base_price > $product->selling_price)
+                            <ul class="product-badge_list">
+                                <li class="product-badge_item h6 sale">
+                                    -{{ round((($product->base_price - $product->selling_price) / $product->base_price) * 100) }}%
+                                </li>
+                            </ul>
+                        @endif
+                    </div>
+                    <div class="card-product_info d-grid">
+                        <p class="tag-product text-small">{{ $category->name }}</p>
+                        <h6 class="name-product">
                                                 <a href="javascript:void(0)" class="link">Flower Pots (Anar) – Mega Pack</a>
-                                            </h6>
-                                            <div class="rate_wrap w-100">
-                                                <i class="icon-star text-star"></i><i class="icon-star text-star"></i><i class="icon-star text-star"></i><i class="icon-star text-star"></i><i class="icon-star text-star"></i>
-                                            </div>
-                                            <div class="price-wrap mb-0">
-                                                <h4 class="price-new">₹499</h4>
-                                                <span class="price-old h6">₹590</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Product 3 -->
-                                <div class="swiper-slide">
-                                    <div class="card-product style-5">
-                                        <div class="card-product_wrapper aspect-ratio-0 d-flex">
-                                            <a href="javascript:void(0)" class="product-img">
-                                                <img class="lazyload img-product" src="{{asset('front-end/images/products/crackers/rockets.png')}}"
-                                                    data-src="{{asset('front-end/images/products/crackers/rockets.png')}}" alt="Rockets">
-                                            </a>
-                                            <ul class="product-action_list">
-                                                <li>
-                                                    <a href="#shoppingCart" data-bs-toggle="offcanvas" class="hover-tooltip tooltip-left box-icon">
-                                                        <span class="icon icon-shopping-cart-simple"></span>
-                                                        <span class="tooltip">Add to cart</span>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#quickView" data-bs-toggle="modal" class="hover-tooltip tooltip-left box-icon">
-                                                        <span class="icon icon-view"></span>
-                                                        <span class="tooltip">Quick view</span>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                            <ul class="product-badge_list">
-                                                <li class="product-badge_item h6 sale">-25%</li>
-                                            </ul>
-                                        </div>
-                                        <div class="card-product_info d-grid">
-                                            <p class="tag-product text-small">Rockets</p>
-                                            <h6 class="name-product">
-                                                <a href="javascript:void(0)" class="link">Sky Rocket Assorted Pack (12 pcs)</a>
-                                            </h6>
-                                            <div class="rate_wrap w-100">
-                                                <i class="icon-star text-star"></i><i class="icon-star text-star"></i><i class="icon-star text-star"></i><i class="icon-star text-star"></i><i class="icon-star text-star"></i>
-                                            </div>
-                                            <div class="price-wrap mb-0">
-                                                <h4 class="price-new">₹699</h4>
-                                                <span class="price-old h6">₹899</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Product 4 -->
-                                <div class="swiper-slide">
-                                    <div class="card-product style-5">
-                                        <div class="card-product_wrapper aspect-ratio-0 d-flex">
-                                            <a href="javascript:void(0)" class="product-img">
-                                                <img class="lazyload img-product" src="{{asset('front-end/images/products/crackers/bombs.jpg')}}"
-                                                    data-src="{{asset('front-end/images/products/crackers/bombs.jpg')}}" alt="Bombs">
-                                            </a>
-                                            <ul class="product-action_list">
-                                                <li>
-                                                    <a href="#shoppingCart" data-bs-toggle="offcanvas" class="hover-tooltip tooltip-left box-icon">
-                                                        <span class="icon icon-shopping-cart-simple"></span>
-                                                        <span class="tooltip">Add to cart</span>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#quickView" data-bs-toggle="modal" class="hover-tooltip tooltip-left box-icon">
-                                                        <span class="icon icon-view"></span>
-                                                        <span class="tooltip">Quick view</span>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                            <ul class="product-badge_list">
-                                                <li class="product-badge_item h6 sale">-30%</li>
-                                            </ul>
-                                        </div>
-                                        <div class="card-product_info d-grid">
-                                            <p class="tag-product text-small">Bombs</p>
-                                            <h6 class="name-product">
-                                                <a href="javascript:void(0)" class="link">Classic Sound Bombs (20 pcs)</a>
-                                            </h6>
-                                            <div class="rate_wrap w-100">
-                                                <i class="icon-star text-star"></i><i class="icon-star text-star"></i><i class="icon-star text-star"></i><i class="icon-star text-star"></i><i class="icon-star text-star"></i>
-                                            </div>
-                                            <div class="price-wrap mb-0">
-                                                <h4 class="price-new">₹199</h4>
-                                                <span class="price-old h6">₹280</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                        </h6>
+                        <div class="rate_wrap w-100">
+                            @for ($i = 0; $i < 5; $i++)
+                                <i class="icon-star text-star"></i>
+                            @endfor
+                        </div>
+                        <div class="price-wrap mb-0">
+                            <h4 class="price-new">₹{{ number_format($product->selling_price, 2) }}</h4>
+                            @if($product->base_price > $product->selling_price)
+                                <span class="price-old h6">₹{{ number_format($product->base_price, 2) }}</span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+@endisset
                             </div>
                     <div class="sw-dot-default tf-sw-pagination d-xl-none"></div>
                 </div>

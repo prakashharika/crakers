@@ -34,6 +34,31 @@
                 <li class="nav-item">
               <a href="{{ route('property.view') }}" class="nav-link {{ request()->routeIs('property.view') ? 'active' : '' }}"><i class="ri-home-4-fill"></i> <span>Categories</span></a>
                 </li>
+                    <div class="nav-group show">
+               <a href="#" class="nav-label">Sections</a>
+                  <ul class="nav nav-sidebar">
+                     <li class="nav-item">
+                        <a href="{{ route('voucher.section') }}" class="nav-link {{ request()->routeIs('voucher.section') ? 'active' : '' }}">
+                            <i class="ri-home-4-fill"></i> <span>Voucher & Promotional</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('on-sale.section') }}" class="nav-link {{ request()->routeIs('on-sale.section') ? 'active' : '' }}">
+                            <i class="ri-percent-fill"></i> <span>Product On-sale</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('best-sellers.section') }}" class="nav-link {{ request()->routeIs('best-sellers.section') ? 'active' : '' }}">
+                            <i class="ri-trophy-fill"></i> <span>Best Sellers</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('featured-products.section') }}" class="nav-link {{ request()->routeIs('featured-products.section') ? 'active' : '' }}">
+                            <i class="ri-star-fill"></i> <span>Featured Products</span>
+                        </a>
+                    </li>
+                      </ul>
+                    </div>
                 {{-- <li class="nav-item">
                   <a href="{{ route('admin.advertisement') }}" class="nav-link {{ request()->routeIs('admin.advertisement') ? 'active' : '' }}"><i class="ri-advertisement-fill"></i><span>Advertisement</span></a>
                 </li>

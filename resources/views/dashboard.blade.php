@@ -110,7 +110,7 @@
         </div><!-- row -->
         <div class="main-footer mt-5">
             <span>&copy; 2023. CPR Pyropark . All Rights Reserved.</span>
-            <span>Developed by :) <a href="https://codewapp.com/" target="_blank">Jayam Web Soluions</a></span>
+            <span>Developed by :) <a href="https://codewapp.com/" target="_blank">Code Wapp Technologies</a></span>
           </div><!-- main-footer -->
       </div>
 </x-app-layout>

@@ -270,19 +270,11 @@
                                         </p>
                                     </div>
                                     <div class="empty_bot">
-                                        <a href="javascript:void(0)" class="tf-btn animate-btn">
-                                            Shopping
-                                        </a>
-                                        <a href="javascript:void(0)" class="tf-btn style-line">
-                                            Back to home
-                                        </a>
+                                       
                                     </div>
                                 </div>
                                 <div class="tf-mini-cart-item file-delete">
-                                    <div class="tf-mini-cart-image">
-                                        <img class="lazyload" data-src="images/products/electronic/product-17.jpg"
-                                            src="images/products/electronic/product-17.jpg" alt="img-product">
-                                    </div>
+                                    
                                     <div class="tf-mini-cart-info">
                                         <div class="text-small text-main-2 sub">T-shirt</div>
                                         <h6 class="title">
@@ -582,13 +574,13 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const productId = this.getAttribute('data-product-id');
             
-            // Find the closest product container - handle both card product and modal scenarios
+            // Find the closest product container
             let productElement = this.closest('.card-product');
             if (!productElement) {
                 productElement = this.closest('.modal-quick-view');
             }
             
-            // Safely get quantity from the quantity input field
+            // Safely get quantity
             let quantity = 1;
             let quantityInput = null;
             
@@ -599,7 +591,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
             
-            // Validate quantity (must be at least 1)
             if (quantity < 1) {
                 showToast('Error', 'Quantity must be at least 1', 'error');
                 return;
@@ -624,16 +615,16 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Show success message
                     showToast('Success', data.message, 'success');
                     
-                    // Update cart count in header (if you have one)
+                    // Update cart count and total in header
                     updateCartCount(data.cart_count);
+                    updateCartTotal(data.cart_total);
                     
                     // Update offcanvas cart
                     updateCartSidebar();
                     
-                    // Reset quantity to 1 after successful addition if input exists
+                    // Reset quantity to 1
                     if (quantityInput) {
                         quantityInput.value = 1;
                     }
@@ -653,7 +644,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Handle remove from cart buttons (delegated event for dynamic content)
+    // Handle remove from cart buttons
     document.addEventListener('click', function(e) {
         if (e.target.closest('.remove')) {
             e.preventDefault();
@@ -661,12 +652,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const cartItem = removeButton.closest('.tf-mini-cart-item');
             const productId = removeButton.getAttribute('data-product-id');
             
-            if (!productId) {
-                console.error('No product ID found for removal');
-                return;
-            }
+            if (!productId) return;
             
-            // Show loading on the remove button
+            // Show loading
             const originalHtml = removeButton.innerHTML;
             removeButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
             removeButton.style.pointerEvents = 'none';
@@ -684,20 +672,19 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Show success message
                     showToast('Success', data.message, 'success');
                     
-                    // Update cart count in header
+                    // Update cart count and total in header
                     updateCartCount(data.cart_count);
+                    updateCartTotal(data.cart_total);
                     
-                    // Remove the item from the UI or refresh the entire cart
+                    // Remove item from UI or refresh cart
                     if (cartItem) {
                         cartItem.remove();
                         
-                        // Check if cart is now empty
+                        // Check if cart is empty
                         const cartItems = document.querySelectorAll('.tf-mini-cart-item');
                         if (cartItems.length === 0) {
-                            // Show empty cart message
                             document.querySelector('.tf-mini-cart-items').innerHTML = `
                                 <div class="box-text_empty type-shop_cart">
                                     <div class="empty_top">
@@ -717,10 +704,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             `;
                         }
                         
-                        // Update cart totals
                         updateCartTotals(data);
                     } else {
-                        // If we can't find the specific item, refresh the entire cart
                         updateCartSidebar();
                     }
                 } else {
@@ -739,8 +724,45 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Function to update cart count
+    function updateCartCount(count) {
+        const cartCountElements = document.querySelectorAll('.cart-count');
+        cartCountElements.forEach(el => {
+            el.textContent = count;
+            el.style.display = count > 0 ? 'inline-block' : 'none';
+        });
+    }
+
+    // Function to update cart total amount
+    function updateCartTotal(total) {
+        const cartTotalElements = document.querySelectorAll('.cart-total');
+        cartTotalElements.forEach(el => {
+            el.textContent = '₹' + parseFloat(total).toFixed(2);
+        });
+    }
     
-    // Function to show toast notifications
+    function updateCartSidebar() {
+        fetch('{{ route("cart.content") }}')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const cartItemsContainer = document.querySelector('.tf-mini-cart-items');
+                    if (cartItemsContainer) {
+                        cartItemsContainer.innerHTML = data.html;
+                    }
+                    updateCartTotals(data);
+                }
+            });
+    }
+    
+    function updateCartTotals(data) {
+        const countElement = document.querySelector('.prd-count');
+        const totalElement = document.querySelector('.total-price');
+        
+        if (countElement) countElement.textContent = data.count;
+        if (totalElement) totalElement.textContent = '₹' + data.total.toFixed(2);
+    }
+    
     function showToast(title, message, type = 'info') {
         const toastContainer = document.getElementById('toast-container') || createToastContainer();
         const toastId = 'toast-' + Date.now();
@@ -761,7 +783,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const toast = new bootstrap.Toast(toastElement);
         toast.show();
         
-        // Remove toast after it hides
         toastElement.addEventListener('hidden.bs.toast', function() {
             this.remove();
         });
@@ -774,38 +795,6 @@ document.addEventListener('DOMContentLoaded', function() {
         container.style.zIndex = '9999';
         document.body.appendChild(container);
         return container;
-    }
-    
-    function updateCartCount(count) {
-        const cartCountElements = document.querySelectorAll('.cart-count');
-        cartCountElements.forEach(el => {
-            el.textContent = count;
-            el.style.display = count > 0 ? 'inline-block' : 'none';
-        });
-    }
-    
-    function updateCartSidebar() {
-        // Fetch updated cart content via AJAX and update the sidebar
-        fetch('{{ route("cart.content") }}')
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const cartItemsContainer = document.querySelector('.tf-mini-cart-items');
-                    if (cartItemsContainer) {
-                        cartItemsContainer.innerHTML = data.html;
-                    }
-                    updateCartTotals(data);
-                }
-            });
-    }
-    
-    function updateCartTotals(data) {
-        // Update cart totals in the sidebar
-        const countElement = document.querySelector('.prd-count');
-        const totalElement = document.querySelector('.total-price');
-        
-        if (countElement) countElement.textContent = data.count;
-        if (totalElement) totalElement.textContent = '₹' + data.total.toFixed(2);
     }
 });
 </script>

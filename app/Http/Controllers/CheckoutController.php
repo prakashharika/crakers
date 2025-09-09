@@ -25,7 +25,19 @@ class CheckoutController extends Controller
             'cartTotal' => $this->calculateCartTotal($cart),
         ]);
     }
+    private function calculateCharges($cartTotal)
+    {
+        $packingCharge = $cartTotal * 0.03;
+        $gst = $cartTotal * 0.18; // GST on subtotal only
+        $grandTotal = $cartTotal + $packingCharge + $gst;
 
+        return [
+            'subtotal' => $cartTotal,
+            'packing_charge' => $packingCharge,
+            'gst' => $gst,
+            'grand_total' => $grandTotal
+        ];
+    }
     /**
      * Handle placing the order
      */
@@ -49,7 +61,11 @@ class CheckoutController extends Controller
         if (empty($cart)) {
             return redirect()->route('checkout')->with('error', 'Your cart is empty.');
         }
-        // dd($buyer->id);
+
+        // Calculate cart total and charges
+        $cartTotal = $this->calculateCartTotal($cart);
+        $charges = $this->calculateCharges($cartTotal);
+
         // 1. Save the address
         $address = Address::create([
             'buyer_id' => $buyer->id,
@@ -69,17 +85,28 @@ class CheckoutController extends Controller
                 'product_id' => $productId,
                 'quantity' => $item['quantity'],
                 'price' => $item['price'],
-                'payment_status' => 'pending', // or 'paid'
+                'payment_status' => 'pending',
                 'buyer_id' => $buyer->id,
                 'address_id' => $address->id,
+                'subtotal' => $cartTotal,
+                'packing_charge' => $charges['packing_charge'],
+                'gst' => $charges['gst'],
+                'grand_total' => $charges['grand_total']
             ]);
         }
 
-        // 4. Clear the cart
+        // 4. Store order summary in session for payment page
+        session()->put('order_summary', [
+            'order_id' => $orderId,
+            'charges' => $charges,
+            'cart_count' => count($cart)
+        ]);
+
+        // 5. Clear the cart
         session()->forget('cart');
 
-        // 5. Redirect with success message
-        return redirect('/')->with('success', 'Order placed successfully!');
+        // 6. Redirect to payment page
+        return redirect()->route('payment.page')->with('success', 'Order placed successfully!');
     }
 
 

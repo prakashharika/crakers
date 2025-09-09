@@ -133,18 +133,28 @@
                                     </a>
                                 @endif
                                     </li>
-                                    <li>
-                                        <a class="nav-icon-item-2 text-white link" href="{{route('cart.view')}}">
-                                            <div class="position-relative d-flex">
-                                                <i class="icon icon-shopping-cart-simple"></i>
-                                                <span class="count">24</span>
-                                            </div>
-                                            <div class="nav-icon-item_sub d-none d-sm-grid">
-                                                <span class="text-sub text-small-2">Your cart</span>
-                                                <span class="h6">$0.00</span>
-                                            </div>
-                                        </a>
-                                    </li>
+                                   <li>
+    <a class="nav-icon-item-2 text-white link" href="{{ route('cart.view') }}">
+        <div class="position-relative d-flex">
+            <i class="icon icon-shopping-cart-simple"></i>
+            @php
+                $cart = session()->get('cart', []);
+                $cartCount = count($cart);
+                $cartTotal = 0;
+                foreach ($cart as $item) {
+                    $cartTotal += $item['price'] * $item['quantity'];
+                }
+            @endphp
+            <span class="count cart-count" style="{{ $cartCount > 0 ? 'display: inline-block' : 'display: none' }}">
+                {{ $cartCount }}
+            </span>
+        </div>
+        <div class="nav-icon-item_sub d-none d-sm-grid">
+            <span class="text-sub text-small-2">Your cart</span>
+            <span class="h6 cart-total">₹{{ number_format($cartTotal, 2) }}</span>
+        </div>
+    </a>
+</li>
                                 </ul>
                             </div>
                         </div>

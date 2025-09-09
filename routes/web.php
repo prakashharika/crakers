@@ -9,11 +9,13 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PackagesControl;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PropertyControl;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ServicesControl;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VoucherController;
 use App\Models\Advertisement;
 use App\Models\BlogPost;
 use App\Models\OrderPackage;
@@ -26,17 +28,26 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
+use App\Models\BestSellerProduct;
+use App\Models\FeaturedProduct;
+use App\Models\OnSaleProduct;
+use App\Models\VoucherProduct;
 
 Route::get('/', function () {
     $blogs = BlogPost::latest()->take(3)->get();
     $categories = Property::where('status', 1)->orderBy('created_at', 'asc')->take(9)->get();
     $categories2 = Property::where('status', 1)->orderBy('created_at', 'desc')->take(9)->get();
-    $slider = Slider::latest()->get();
     $banner = RegisterPost::latest()->first();
+    $BestSellerProduct = BestSellerProduct::latest()->get();
+    $FeaturedProduct = FeaturedProduct::latest()->get();
+    $OnSaleProduct = OnSaleProduct::latest()->get();
+    $VoucherProduct = VoucherProduct::latest()->get();
+    $slider = Slider::latest()->get();
+
     // dd(session()->get('cart', []));
 
 
-    return view('welcome', compact('blogs', 'categories', 'slider', 'categories2', 'banner'));
+    return view('welcome', compact('blogs', 'categories', 'slider', 'categories2', 'banner', 'BestSellerProduct', 'FeaturedProduct', 'OnSaleProduct', 'VoucherProduct'));
 })->name('home');
 Route::get('/test', function () {
     $admin = User::all();
@@ -122,6 +133,32 @@ Route::prefix('admin')->group(function () {
         Route::post('/property-store/', [PropertyControl::class, 'propertyStore'])->name('properties.store');
         Route::post('/property-status/', [PropertyControl::class, 'propertyStatus'])->name('property.status.update');
 
+        Route::prefix('voucher')->group(function () {
+            Route::get('/section', [VoucherController::class, 'index'])->name('voucher.section');
+            Route::post('/store-products', [VoucherController::class, 'storeProducts'])->name('voucher.store.products');
+        });
+        Route::prefix('api')->group(function () {
+            Route::get('/categories', [VoucherController::class, 'getCategories'])->name('api.categories');
+            Route::get('/category/{id}/products', [VoucherController::class, 'getProductsByCategory'])->name('api.category.products');
+        });
+
+        // On-sale routes
+        Route::prefix('on-sale')->group(function () {
+            Route::get('/section', [VoucherController::class, 'index1'])->name('on-sale.section');
+            Route::post('/store-products', [VoucherController::class, 'storeProducts1'])->name('on-sale.store.products');
+        });
+
+        // Best sellers routes
+        Route::prefix('best-sellers')->group(function () {
+            Route::get('/section', [VoucherController::class, 'index2'])->name('best-sellers.section');
+            Route::post('/store-products', [VoucherController::class, 'storeProducts2'])->name('best-sellers.store.products');
+        });
+
+        // Featured products routes
+        Route::prefix('featured-products')->group(function () {
+            Route::get('/section', [VoucherController::class, 'index3'])->name('featured-products.section');
+            Route::post('/store-products', [VoucherController::class, 'storeProducts3'])->name('featured-products.store.products');
+        });
 
         Route::resource('products', ProductController::class);
         Route::get('/property-edit/{id}', [PropertyControl::class, 'propertyEdit'])->name('properties-list.edit');
@@ -181,6 +218,10 @@ Route::prefix('user')->group(function () {
         Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout');
         Route::post('/checkout', [CheckoutController::class, 'placeOrder'])->name('checkout.place');
 
+        Route::get('/payment', [PaymentController::class, 'showPaymentPage'])->name('payment.page');
+        Route::post('/payment/process', [PaymentController::class, 'processPayment'])->name('payment.process');
+        Route::get('/payment/check', [PaymentController::class, 'checkPayment'])->name('payment.check');
+        Route::get('/order/success', [PaymentController::class, 'orderSuccess'])->name('order.success');
 
         Route::get('/seller-view', [PropertyControl::class, 'sellerindex'])->name('property.user.index');
         Route::get('/property-seller-list/{id}', [PropertyControl::class, 'sellerlist'])->name('property-seller-list');
