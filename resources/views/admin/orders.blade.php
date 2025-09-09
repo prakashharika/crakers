@@ -168,11 +168,29 @@ kuhj<x-app-layout>
                                         <div class="order-footer">
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div>
-                                                    <span class="total-amount">
-                                                        Order Total: ₹{{ number_format($orderItems->sum(function($item) {
-                                                            return $item->price * $item->quantity;
-                                                        }), 2) }}
-                                                    </span>
+                                                   @php
+    // Calculate subtotal
+    $subtotal = $orderItems->sum(function($item) {
+        return $item->price * $item->quantity;
+    });
+    
+    // Calculate charges
+    $packingCharge = $subtotal * 0.03; // 3% packing charge
+    $gst = $subtotal * 0.18; // 18% GST on subtotal only
+    $grandTotal = $subtotal + $packingCharge + $gst;
+@endphp
+
+<!-- Display order total with charges -->
+<span class="total-amount">
+    Order Total: ₹{{ number_format($grandTotal, 2) }}
+</span>
+
+<!-- Optional: Display breakdown -->
+<div class="order-summary-breakdown" style="font-size: 0.9rem; color: #666; margin-top: 5px;">
+    <div>Subtotal: ₹{{ number_format($subtotal, 2) }}</div>
+    <div>Packing Charge (3%): ₹{{ number_format($packingCharge, 2) }}</div>
+    <div>GST (18%): ₹{{ number_format($gst, 2) }}</div>
+</div>
                                                 </div>
                                                 <div>
                                                     {{-- <button class="btn btn-sm btn-info me-2" data-bs-toggle="modal" data-bs-target="#orderModal{{ $orderId }}">
