@@ -15,6 +15,7 @@ use App\Http\Controllers\PropertyControl;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ServicesControl;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\BuyerController;
 use App\Http\Controllers\VoucherController;
 use App\Models\Advertisement;
 use App\Models\BlogPost;
@@ -121,6 +122,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/dashboard', function () {
             return view('dashboard');
         })->name('admin.dashboard');
+        Route::get('/buyers', [BuyerController::class, 'index'])->name('buyers.list');
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
