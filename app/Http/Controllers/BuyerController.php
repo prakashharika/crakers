@@ -9,7 +9,7 @@ class BuyerController extends Controller
 {
     public function index()
     {
-        $buyers = Buyer::all(); // Or use pagination: Buyer::paginate(10)
+        $buyers = Buyer::all(); 
 
         return view('admin.usertable', compact('buyers'));
     }
