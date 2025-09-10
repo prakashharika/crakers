@@ -34,6 +34,12 @@
                 <li class="nav-item">
               <a href="{{ route('property.view') }}" class="nav-link {{ request()->routeIs('property.view') ? 'active' : '' }}"><i class="ri-home-4-fill"></i> <span>Categories</span></a>
                 </li>
+                  <li class="nav-item">
+                <a href="{{ route('users.list') }}" class="nav-link {{ request()->routeIs('users.list') ? 'active' : '' }}">
+                    <i class="ri-user-line"></i> <span>User List</span>
+                </a>
+            </li>
+
                     <div class="nav-group show">
                <a href="#" class="nav-label">Sections</a>
                   <ul class="nav nav-sidebar">
