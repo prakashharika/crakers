@@ -57,7 +57,8 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($buyers as $buyer)
+                @if($buyers->count() > 0)
+                @foreach($buyers as $buyer)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $buyer->name }}</td>
@@ -67,11 +68,11 @@
                         <td>{{ $buyer->address }}</td>
                         <td>{{ ucfirst($buyer->status) }}</td>
                     </tr>
-                @empty
+                @endforeach
+                @else
                     <tr>
                         <td colspan="7">No buyers found.</td>
                     </tr>
-                @endforelse
             </tbody>
         </table>
     </div>
@@ -79,8 +80,8 @@
             <!-- Footer -->
         <div class="main-footer mt-5">
             <span>&copy; 2023. CPR Pyropark . All Rights Reserved.</span>
-            <span>Developed by :) <a href="https://codewapp.com/" target="_blank">Jayam Web
-                    Solutions</a></span>
+            <span>Developed by :) <a href="https://codewapp.com/" target="_blank">Codewapp
+                   </a></span>
         </div>
     </div>
          </div>
