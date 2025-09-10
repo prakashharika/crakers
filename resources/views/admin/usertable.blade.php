@@ -8,7 +8,7 @@
     <div class="main main-app p-3 p-lg-4">
         <div class="container mt-4">
             <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                <h4 class="main-title mb-0">Terms and Conditions</h4>
+                <h4 class="main-title mb-0">Users List</h4>
             </div>
 
             @if (session('success'))
@@ -73,6 +73,7 @@
                     <tr>
                         <td colspan="7">No buyers found.</td>
                     </tr>
+                @endif
             </tbody>
         </table>
     </div>
