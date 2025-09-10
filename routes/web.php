@@ -122,7 +122,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/dashboard', function () {
             return view('dashboard');
         })->name('admin.dashboard');
-        Route::get('/buyers', [BuyerController::class, 'index'])->name('buyers.list');
+        Route::get('/buyers', [BuyerController::class, 'index'])->name('users.list');
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
