@@ -95,7 +95,10 @@
         <div class="container">
             <div class="sect-title type-3 type-2 pb-0 border-0 wow fadeInUp">
                 <h2 class="s-title type-semibold text-nowrap">Best Sellers</h2>
-                <a href="javascript:void(0)" class="tf-btn-icon h6 fw-medium text-nowrap">
+                @php
+   $firstCategorySlug = $BestSellerProduct->first()->product->category->slug ?? '#';
+@endphp
+                <a  href="{{ route('product.category', ['slug' => $firstCategorySlug]) }}"  class="tf-btn-icon h6 fw-medium text-nowrap">
                     View All Products
                     <i class="icon icon-caret-circle-right"></i>
                 </a>
@@ -114,7 +117,7 @@
                                 <div class="swiper-slide">
                                     <div class="card-product style-5 style-padding">
                                         <div class="card-product_wrapper aspect-ratio-0 d-flex">
-                                            <a href="javascript:void(0)" class="product-img">
+                                            <a href="{{ route('product.view', ['slug' => $product->slug]) }}" class="product-img">
                                                 <img class="lazyload img-product" 
                                                     src="{{ asset($product->images) }}" 
                                                     data-src="{{ asset($product->images) }}" 
@@ -140,8 +143,7 @@
                                         <div class="card-product_info d-grid">
                                             <p class="tag-product text-small">{{ $category->name ?? 'Uncategorized' }}</p>
                                             <h6 class="name-product">
-                                                <a href="javascript:void(0)" class="link">{{ $product->name }}</a>
-                                            </h6>
+<a href="{{ route('product.view', ['slug' => $product->slug]) }}" class="link">{{ $product->name }}</a>                                            </h6>
                                             <div class="rate_wrap w-100">
                                                 @for ($i = 0; $i < 5; $i++)
                                                     <i class="icon-star text-star"></i>
@@ -212,10 +214,7 @@
                 <div class="sect-title type-3 type-2 flex-wrap wow fadeInUp">
                     <h2 class="s-title text-nowrap">Deal of the day</h2>
                   
-                    <a href="javascript:void(0)" class="tf-btn-icon h6 fw-medium text-nowrap">
-                        View All Product
-                        <i class="icon icon-caret-circle-right"></i>
-                    </a>
+                   
                 </div>
                 <div class="tab-content">
                     <div class="tab-pane active show" id="all-product" role="tabpanel">
@@ -229,7 +228,7 @@
             <div class="swiper-slide">
                 <div class="card-product style-5">
                     <div class="card-product_wrapper aspect-ratio-0 d-flex">
-                        <a href="javascript:void(0)" class="product-img">
+                        <a href="{{ route('product.view', ['slug' => $product->slug]) }}" class="product-img">
                             <img class="lazyload img-product" 
                                 src="{{ asset($product->images) }}" 
                                 data-src="{{ asset($product->images) }}" 
@@ -270,7 +269,7 @@
                     <div class="card-product_info d-grid">
                         <p class="tag-product text-small">{{ $category->name }}</p>
                         <h6 class="name-product">
-                                                <a href="javascript:void(0)" class="link">Flower Pots (Anar) – Mega Pack</a>
+<a href="{{ route('product.view', ['slug' => $product->slug]) }}" class="link">{{ $product->name }}</a>
                         </h6>
                         <div class="rate_wrap w-100">
                             @for ($i = 0; $i < 5; $i++)
@@ -306,7 +305,10 @@
         <div class="container">
             <div class="sect-title type-3 type-2 wow fadeInUp">
                 <h2 class="s-title type-semibold">Products On Sale</h2>
-                <a href="javascript:void(0)" class="tf-btn-icon h6 fw-medium">
+                 @php
+   $firstCategorySlug = $OnSaleProduct->first()->product->category->slug ?? '#';
+@endphp
+                <a  href="{{ route('product.category', ['slug' => $firstCategorySlug]) }}"  class="tf-btn-icon h6 fw-medium text-nowrap">
                     View All Products
                     <i class="icon icon-caret-circle-right"></i>
                 </a>
@@ -323,7 +325,7 @@
                         <div class="swiper-slide">
                             <div class="card-product style-5">
                                 <div class="card-product_wrapper aspect-ratio-0 d-flex">
-                                    <a href="javascript:void(0)" class="product-img">
+                                    <a href="{{ route('product.view', ['slug' => $product->slug]) }}" class="product-img">
                                         <img class="lazyload img-product" 
                                             src="{{ asset($product->images) }}" 
                                             data-src="{{ asset($product->images) }}" 
@@ -356,8 +358,7 @@
                                 <div class="card-product_info d-grid">
                                     <p class="tag-product text-small">{{ $category->name ?? 'Uncategorized' }}</p>
                                     <h6 class="name-product">
-                                        <a href="javascript:void(0)" class="link">{{ $product->name }}</a>
-                                    </h6>
+<a href="{{ route('product.view', ['slug' => $product->slug]) }}" class="link">{{ $product->name }}</a>                                    </h6>
                                     <div class="rate_wrap w-100">
                                         @for ($i = 0; $i < 5; $i++)
                                             <i class="icon-star text-star"></i>
@@ -384,10 +385,7 @@
             <div class="container">
                 <div class="sect-title type-3 type-2 wow fadeInUp">
                     <h2 class="s-title type-semibold text-nowrap">Product New Lunched</h2>
-                    <a href="javascript:void(0)" class="tf-btn-icon h6 fw-medium text-nowrap">
-                        View All Product
-                        <i class="icon icon-caret-circle-right"></i>
-                    </a>
+               
                 </div>
                 <div dir="ltr" class="swiper tf-swiper wow fadeInUp" data-preview="4" data-tablet="3" data-mobile-sm="2" data-mobile="2"
                     data-space-lg="48" data-space-md="24" data-space="12" data-pagination="2" data-pagination-sm="2" data-pagination-md="3"
@@ -399,7 +397,7 @@
             <div class="swiper-slide">
                 <div class="card-product style-5">
                     <div class="card-product_wrapper aspect-ratio-0 d-flex">
-                        <a href="javascript:void(0)" class="product-img">
+                        <a href="{{ route('product.view', ['slug' => $product->slug]) }}" class="product-img">
                             <img class="lazyload img-product" 
                                 src="{{ asset($product->images) }}" 
                                 data-src="{{ asset($product->images) }}" 
@@ -440,7 +438,7 @@
                     <div class="card-product_info d-grid">
                         <p class="tag-product text-small">{{ $category->name }}</p>
                         <h6 class="name-product">
-                            <a href="{{ route('product.show', $product->slug) }}" class="link">{{ $product->name }}</a>
+                            <a href="{{ route('product.view', $product->slug) }}" class="link">{{ $product->name }}</a>
                         </h6>
                         <div class="rate_wrap w-100">
                             @for ($i = 0; $i < 5; $i++)
@@ -502,7 +500,10 @@
         <div class="container">
             <div class="sect-title type-3 type-2 wow fadeInUp">
                 <h2 class="s-title type-semibold">Featured Products</h2>
-                <a href="javascript:void(0)" class="tf-btn-icon h6 fw-medium">
+                  @php
+   $firstCategorySlug = $FeaturedProduct->first()->product->category->slug ?? '#';
+@endphp
+                <a  href="{{ route('product.category', ['slug' => $firstCategorySlug]) }}"  class="tf-btn-icon h6 fw-medium text-nowrap">
                     View All Products
                     <i class="icon icon-caret-circle-right"></i>
                 </a>
@@ -519,7 +520,7 @@
                         <div class="swiper-slide">
                             <div class="card-product style-5">
                                 <div class="card-product_wrapper aspect-ratio-0 d-flex">
-                                    <a href="javascript:void(0)" class="product-img">
+                                    <a href="{{ route('product.view', ['slug' => $product->slug]) }}" class="product-img">
                                         <img class="lazyload img-product" 
                                             src="{{ asset($product->images) }}" 
                                             data-src="{{ asset($product->images) }}" 
@@ -552,8 +553,7 @@
                                 <div class="card-product_info d-grid">
                                     <p class="tag-product text-small">{{ $category->name ?? 'Uncategorized' }}</p>
                                     <h6 class="name-product">
-                                        <a href="javascript:void(0)" class="link">{{ $product->name }}</a>
-                                    </h6>
+<a href="{{ route('product.view', ['slug' => $product->slug]) }}" class="link">{{ $product->name }}</a>                                    </h6>
                                     <div class="rate_wrap w-100">
                                         @for ($i = 0; $i < 5; $i++)
                                             <i class="icon-star text-star"></i>
@@ -580,10 +580,7 @@
             <div class="container">
                 <div class="sect-title type-3 type-2 wow fadeInUp">
                     <h2 class="s-title type-semibold text-nowrap">Voucher & Promotional</h2>
-                    <a href="javascript:void(0)" class="tf-btn-icon h6 fw-medium text-nowrap">
-                        View All Product
-                        <i class="icon icon-caret-circle-right"></i>
-                    </a>
+                  
                 </div>
                 <div dir="ltr" class="swiper tf-swiper wow fadeInUp" data-preview="4" data-tablet="3" data-mobile-sm="2" data-mobile="2"
                     data-space-lg="48" data-space-md="24" data-space="12" data-pagination="2" data-pagination-sm="2" data-pagination-md="3"
@@ -597,7 +594,7 @@
             <div class="swiper-slide">
                 <div class="card-product style-5">
                     <div class="card-product_wrapper aspect-ratio-0 d-flex">
-                        <a href="javascript:void(0)" class="product-img">
+                        <a href="{{ route('product.view', ['slug' => $product->slug]) }}" class="product-img">
                             <img class="lazyload img-product" 
                                 src="{{ asset($product->images) }}" 
                                 data-src="{{ asset($product->images) }}" 
@@ -638,7 +635,7 @@
                     <div class="card-product_info d-grid">
                         <p class="tag-product text-small">{{ $category->name }}</p>
                         <h6 class="name-product">
-                                                <a href="javascript:void(0)" class="link">Flower Pots (Anar) – Mega Pack</a>
+                            <a href="{{ route('product.view', ['slug' => $product->slug]) }}" class="link">{{ $product->name }}</a>
                         </h6>
                         <div class="rate_wrap w-100">
                             @for ($i = 0; $i < 5; $i++)
@@ -667,10 +664,7 @@
             <div class="container">
                 <div class="sect-title type-3 type-2 wow fadeInUp">
                     <h2 class="s-title type-semibold text-nowrap">Cracker Stories</h2>
-                    <a href="javascript:void(0)" class="tf-btn-icon h6 fw-medium text-nowrap">
-                        View All Blog
-                        <i class="icon icon-caret-circle-right"></i>
-                    </a>
+                  
                 </div>
                 <div dir="ltr" class="swiper tf-swiper" data-preview="3" data-tablet="3" data-mobile-sm="2" data-mobile="1" 
                     data-space-lg="48" data-space-md="32" data-space="12" 
@@ -836,142 +830,5 @@
     </div>
     <!-- /Toolbar -->
 
-    <!-- Size Guide -->
-    <div class="modal modalCentered fade modal-size-guide" id="size-guide">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content widget-tabs style-2">
-                <div class="header">
-                    <ul class="widget-menu-tab">
-                        <li class="item-title active">
-                            <span class="inner h3">Size </span>
-                        </li>
-                        <li class="item-title">
-                            <span class="inner h3">Size Guide</span>
-                        </li>
-                    </ul>
-                    <span class="icon-close icon-close-popup" data-bs-dismiss="modal"></span>
-                </div>
-                <div class="wrap">
-                    <div class="widget-content-tab">
-                        <div class="widget-content-inner active">
-                            <div class="tab-size">
-                                <div>
-                                    <div class="widget-size mb-24">
-                                        <div class="box-title-size">
-                                            <div class="title-size h6 text-black">Height</div>
-                                            <div class="number-size text-small">
-                                                <span class="max-size">100</span>
-                                                <span class="">Cm</span>
-                                            </div>
-                                        </div>
-                                        <div class="range-input">
-                                            <div class="tow-bar-block">
-                                                <div class="progress-size" style="width: 50%;"></div>
-                                            </div>
-                                            <input type="range" min="0" max="200" value="100" class="range-max">
-                                        </div>
-                                    </div>
-                                    <div class="widget-size">
-                                        <div class="box-title-size">
-                                            <div class="title-size h6 text-black">Weight</div>
-                                            <div class="number-size text-small">
-                                                <span class="max-size">50</span>
-                                                <span class="">Kg</span>
-                                            </div>
-                                        </div>
-                                        <div class="range-input">
-                                            <div class="tow-bar-block">
-                                                <div class="progress-size" style="width: 50%;"></div>
-                                            </div>
-                                            <input type="range" min="0" max="100" value="50" class="range-max">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="size-button-wrap choose-option-list">
-                                    <div class="size-button-item choose-option-item">
-                                        <h6 class="text">Thin</h6>
-                                    </div>
-                                    <div class="size-button-item choose-option-item select-option">
-                                        <h6 class="text">Normal</h6>
-                                    </div>
-                                    <div class="size-button-item choose-option-item">
-                                        <h6 class="text">Plump</h6>
-                                    </div>
-                                </div>
-                                <div class="suggests">
-                                    <h4 class="">Suggests for you:</h4>
-                                    <div class="suggests-list">
-                                        <a href="#" class="suggests-item link h6">L - shirt</a>
-                                        <a href="#" class="suggests-item link h6">XL - Pant</a>
-                                        <a href="#" class="suggests-item link h6">31 - Jeans</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="widget-content-inner overflow-auto text-nowrap">
-                            <table class="tab-sizeguide-table">
-                                <thead>
-                                    <tr>
-                                        <th>Size</th>
-                                        <th>US</th>
-                                        <th>Bust</th>
-                                        <th>Waist</th>
-                                        <th>Low Hip</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>XS</td>
-                                        <td>2</td>
-                                        <td>32</td>
-                                        <td>24 - 25</td>
-                                        <td>33 - 34</td>
-                                    </tr>
-                                    <tr>
-                                        <td>S</td>
-                                        <td>4</td>
-                                        <td>26 - 27</td>
-                                        <td>34 - 35</td>
-                                        <td>35 - 26</td>
-                                    </tr>
-                                    <tr>
-                                        <td>M</td>
-                                        <td>6</td>
-                                        <td>28 - 29</td>
-                                        <td>36 - 37</td>
-                                        <td>38 - 40</td>
-                                    </tr>
-                                    <tr>
-                                        <td>L</td>
-                                        <td>8</td>
-                                        <td>30 - 31</td>
-                                        <td>38 - 29</td>
-                                        <td>42 - 44</td>
-                                    </tr>
-                                    <tr>
-                                        <td>XL</td>
-                                        <td>10</td>
-                                        <td>32 - 33</td>
-                                        <td>40 - 41</td>
-                                        <td>45 - 47</td>
-                                    </tr>
-                                    <tr>
-                                        <td>XXL</td>
-                                        <td>12</td>
-                                        <td>34 - 35</td>
-                                        <td>42 - 43</td>
-                                        <td>48 - 50</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- /Size Guide -->
 
 @endsection

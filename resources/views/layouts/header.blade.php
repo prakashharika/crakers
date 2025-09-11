@@ -70,37 +70,25 @@
                         </div>
                         <div class="col-xl-10 col-md-4 col-3">
                             <div class="header-right">
-                                <form class="form_search-product style-search-2 d-none d-xl-flex">
-                                        <div class="select-category">
-                                        <select name="product_cat" id="product_cat" class="dropdown_product_cat">
-                                            <option value="" selected="selected">All Categories</option>
-                                            @foreach($categories as $category)
-                                                <option class="level-0" value="{{ $category->slug }}">
-                                                    {{ $category->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-
-                                        <ul class="select-options">
-                                            <li class="link" rel="">
-                                                <a href="{{route('product.categories')}}"><span>All Categories</span></a>
-                                            </li>
-                                            @foreach($categories as $category)
-                                                <li class="link" rel="{{ $category->slug }}">
-                                                    <a href="{{ route('product.category', ['slug' => $category->slug]) }}">
-                                                        <span>{{ $category->name }}</span>
-                                                    </a>
-                                                </li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
-                                    <span class="br-line type-vertical"></span>
-                                    <input class="style-def" type="text" placeholder="Search for products..." required>
-                                    <button type="submit" class="btn-submit">
-                                        <i class="icon icon-magnifying-glass"></i>
-                                        <span class="h6 fw-bold">Search</span>
-                                    </button>
-                                </form>
+                                <form class="form_search-product style-search-2 d-none d-xl-flex" action="{{ route('search') }}" method="GET">
+    <div class="select-category">
+        <select name="product_cat" id="product_cat" class="dropdown_product_cat">
+            <option value="" selected="selected">All Categories</option>
+            @foreach($categories as $category)
+                <option class="level-0" value="{{ $category->slug }}">
+                    {{ $category->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+    <span class="br-line type-vertical"></span>
+    <input class="style-def" type="text" name="query" placeholder="Search for products..." required 
+           value="{{ request('query') }}">
+    <button type="submit" class="btn-submit">
+        <i class="icon icon-magnifying-glass"></i>
+        <span class="h6 fw-bold">Search</span>
+    </button>
+</form>
                                 <ul class="nav-icon-list text-nowrap">
                                     <li class="d-none d-lg-flex">
                                 @if(Auth::guard('seller')->check())

@@ -16,6 +16,7 @@ use App\Models\GeneralDetail;
 use App\Models\Order;
 use App\Models\OrderPackage;
 use App\Models\Package;
+use App\Models\Product;
 use App\Models\Sale;
 use App\Models\TermsAndPolicy;
 use Carbon\Carbon;
@@ -63,44 +64,34 @@ class HomeControl extends Controller
     public function search(Request $request)
     {
         $query = $request->input('query');
+        $category = $request->input('product_cat');
 
-        if (!$query) {
-            return response()->json([]);
+        // Get all categories for the dropdown
+        $categories = Property::where('status', 1)->orderBy('name')->get();
+
+        // Build search query
+        $products = Product::query();
+
+        // Apply category filter if selected
+        if ($category && $category !== '') {
+            $products->whereHas('category', function ($q) use ($category) {
+                $q->where('slug', $category);
+            });
         }
 
-        $results = PropertiesList::where(function ($queryBuilder) use ($query) {
-            $queryBuilder->where('title', 'LIKE', "%{$query}%")
-                ->orWhere('area', 'LIKE', "%{$query}%")
-                ->orWhere('configuration', 'LIKE', "%{$query}%")
-                ->orWhere('price', 'LIKE', "%{$query}%")
-                ->orWhere('address', 'LIKE', "%{$query}%")
-                ->orWhere('total_floors', 'LIKE', "%{$query}%")
-                ->orWhere('facing', 'LIKE', "%{$query}%")
-                ->orWhere('property_age', 'LIKE', "%{$query}%")
-                ->orWhere('location', 'LIKE', "%{$query}%")
-                ->orWhere('about_property', 'LIKE', "%{$query}%");
-        })
-            ->where('status', 1)
-            ->where(function ($queryBuilder) {
-                $queryBuilder->whereHas('LandOwner.OrderPackage', function ($query) {
-                    $query->where('status', 'active'); // Active order packages
-                })
-                    ->orWhereNull('land_owner_id');
-            })
-            ->get();
-        foreach ($results as $property) {
-            $property->view_url = route('property-view', [
-                'slug' => \Hashids::encode($property->id),
-                'name' => Str::slug($property->title),
-            ]);
-            $images = json_decode($property->images, true);
-            if (is_array($images) && !empty($images)) {
-                $property->first_image = asset('uploads/properties/images') . '/' . $images[0];
-            } else {
-                $property->first_image = null;
-            }
+        // Apply search query
+        if ($query) {
+            $products->where(function ($q) use ($query) {
+                $q->where('name', 'like', '%' . $query . '%')
+                    ->orWhere('tamil_name', 'like', '%' . $query . '%')
+                    ->orWhere('description', 'like', '%' . $query . '%')
+                    ->orWhere('items', 'like', '%' . $query . '%');
+            });
         }
-        return response()->json($results);
+
+        $products = $products->with('category')->paginate(12);
+
+        return view('view.search-results', compact('products', 'categories', 'query', 'category'));
     }
 
     public function blogList()
@@ -126,6 +117,13 @@ class HomeControl extends Controller
     {
         $services = Service::all();
         return view('view.services', compact('services'));
+    }
+    public function viewProduct($slug)
+    {
+        $product = Product::where('slug', $slug)
+            ->with('category')
+            ->firstOrFail();
+        return view('view.product', compact('product'));
     }
     public function postProperty()
     {

@@ -67,9 +67,9 @@ Route::get('/test', function () {
 })->name('test');
 
 Route::get('/products', [ProductController::class, 'productAll'])->name('products.all');
-Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.show');
 Route::get('/categories', [HomeControl::class, 'categories'])->name('product.categories');
 Route::get('/category/{slug?}', [HomeControl::class, 'categoryProducts'])->name('product.category');
+Route::get('/product/{slug?}', [HomeControl::class, 'viewProduct'])->name('product.view');
 
 Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
 Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');

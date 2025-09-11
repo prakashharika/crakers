@@ -142,7 +142,7 @@
     </div>
 
                     
-                    <a href="{{ route('checkout') }}" class="btn btn-primary w-100 mb-3">Proceed to Checkout</a>
+                    <a href="{{ route('checkout') }}" class="btn btn-primary w-100 mb-3">Proceed to buy</a>
                     <a href="{{ url('/') }}" class="btn btn-outline-secondary w-100">Continue Shopping</a>
                 </div>
             </div>

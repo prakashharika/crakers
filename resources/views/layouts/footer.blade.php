@@ -194,8 +194,6 @@
                                 </div>
                             </div>
                             <p class="product-infor-sub text-main h6">
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse justo dolor, consectetur vel metus vitae,
-                                tincidunt finibus dui fusce tellus enim.
                             </p>
                         </div>
                         <div class="tf-product-variant w-100">
@@ -213,20 +211,19 @@
                             </div>
                         </div>
                         <div class="tf-product-total-quantity w-100">
-                            <div class="group-btn">
-                                <div class="wg-quantity">
-                                    <button class="btn-quantity btn-decrease">
-                                        <i class="icon icon-minus"></i>
-                                    </button>
-                                    <input class="quantity-product" type="text" name="number" value="1">
-                                    <button class="btn-quantity btn-increase">
-                                        <i class="icon icon-plus"></i>
-                                    </button>
+                                <div class="group-btn">
+                                    <div class="wg-quantity">
+                                        <button class="btn-quantity btn-decrease">
+                                            <i class="icon icon-minus"></i>
+                                        </button>
+                                        <input class="quantity-product" type="text" name="number" value="1">
+                                        <button class="btn-quantity btn-increase">
+                                            <i class="icon icon-plus"></i>
+                                        </button>
+                                    </div>
+                                    <p class="h6 d-none d-sm-block">
+                                    </p>
                                 </div>
-                                <p class="h6 d-none d-sm-block">
-                                    15 products available
-                                </p>
-                            </div>
                             <div class="group-btn flex-sm-nowrap">
                                 <a href="#shoppingCart" data-bs-toggle="offcanvas" 
                                    class="tf-btn animate-btn btn-add-to-cart add-to-cart-btn"
@@ -236,7 +233,7 @@
                                 </a>
                             </div>
                         </div>
-                        <a href="javascript:void(0)" class="tf-btn-line text-normal letter-space-0 fw-normal">
+                        <a href="javascript:void(0)" class="tf-btn-line text-normal letter-space-0 fw-normal product-url">
                             <span class="h5">View full details</span>
                             <i class="icon icon-arrow-top-right fs-24"></i>
                         </a>
@@ -562,6 +559,29 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+});
+// Enhance search form functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const searchForm = document.querySelector('.form_search-product');
+    if (searchForm) {
+        searchForm.addEventListener('submit', function(e) {
+            const searchInput = this.querySelector('input[type="text"]');
+            if (searchInput.value.trim() === '') {
+                e.preventDefault();
+                searchInput.focus();
+            }
+        });
+    }
+
+    // Update select dropdown to show current selection
+    const categorySelect = document.querySelector('#product_cat');
+    if (categorySelect) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const selectedCategory = urlParams.get('product_cat');
+        if (selectedCategory) {
+            categorySelect.value = selectedCategory;
+        }
+    }
 });
 </script>
 
